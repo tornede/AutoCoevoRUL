@@ -1,0 +1,5 @@
+{
+  "repository" : "regressors-index",
+  "include" : [ "./decisiontreeregressor.json", "./kneighborsregressor.json", "./lasso.json", "./linearregression.json", "./linearsvr.json", "./svr.json", "./randomforestregressor.json", "./mlpregressor.json" ],
+  "components" : [ ]
+}

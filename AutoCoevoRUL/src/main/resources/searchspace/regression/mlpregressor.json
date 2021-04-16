@@ -1,0 +1,41 @@
+{
+    "repository" : "sklearn.neural_network.MLPRegressor",
+    "include" : [ ],
+    "components" : [ {
+      "name" : "sklearn.neural_network.MLPRegressor",
+      "providedInterface" : [ "BasicRegressor", "BaseLearner", "AbstractRegressor" ],
+      "requiredInterface" : [ ],
+      "parameters" : [ {
+        "name" : "alpha",
+        "type" : "double",
+        "default" : 1.0,
+        "min" : 0.000001,
+        "max" : 1.0,
+        "minInterval" : 0.0001,
+        "refineSplits" : 8
+      }, {
+        "name" : "batch_size",
+        "type" : "cat",
+        "values" : [ "auto", "10", "25", "50", "100" ],
+        "default" : "auto"
+      }, {
+        "name" : "solver",
+        "type" : "cat",
+        "values" : [ "lbfgs", "sgd", "adam" ],
+        "default" : "adam"
+      }, {
+        "name" : "learning_rate",
+        "type" : "cat",
+        "values" : [ "constant", "invscaling", "adaptive" ],
+        "default" : "constant"
+      }, {
+        "name" : "learning_rate_init",
+        "type" : "double",
+        "default" : 0.001,
+        "min" : 0.000001,
+        "max" : 1.0,
+        "minInterval" : 0.0001,
+        "refineSplits" : 8
+      }]
+    } ]
+  }

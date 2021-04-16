@@ -1,0 +1,23 @@
+{
+    "repository": "pyts.transformation.ROCKET",
+    "components": [
+      {
+        "name": "pyts.transformation.ROCKET",
+        "providedInterface": [
+          "UnivariateTSFeatureGenerator"
+        ],
+        "requiredInterface": [],
+        "parameters": [
+          {
+            "name": "n_kernels",
+            "type": "int",
+            "default": 100,
+            "min": 1,
+            "max": 350,
+            "minInterval": 1,
+            "refineSplits": 8
+          }
+        ]
+      }    
+    ]
+  }

@@ -1,0 +1,5 @@
+{
+    "repository" : "timeseries.pyts.transformation-index",
+    "include" : [ "./Rocket.json", "./UltraFastShapelets.json" ],
+    "components" : [ ]
+  }

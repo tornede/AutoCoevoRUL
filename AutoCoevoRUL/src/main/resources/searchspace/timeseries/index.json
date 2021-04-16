@@ -1,0 +1,5 @@
+{
+    "repository" : "timeseries",
+    "include" : [ "./pyts/pyts.json", "./tsfresh/tsfresh.json" ],
+    "components" : [ ]
+  }

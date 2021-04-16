@@ -1,0 +1,32 @@
+Bootstrap: docker
+From: ubuntu:18.04
+
+%files
+   python_connection/
+
+%post
+   echo "Installing the singularity container"
+   apt update -y
+   apt upgrade -y
+   apt install curl -y
+   apt install wget -y
+   apt install git -y
+
+   mkdir -p /usr/share/man/man1
+   apt install openjdk-11-jre -y
+
+   apt install -y python3-pip
+   ln -s /usr/bin/python3 /usr/bin/python
+   ln -s /usr/bin/pip3 /usr/bin/pip
+
+   pip3 install -U pip
+   pip3 install numpy==1.19.5
+   pip3 install scipy==1.5.4
+   pip3 install Cython==0.29.21
+   pip3 install liac-arff==2.5.0
+   pip3 install scikit-learn==0.24.1
+   pip3 install tsfresh==0.17.0
+   pip3 install pyts==0.11.0
+   pip3 install python_connection/
+
+   echo "Successfully installed all features"

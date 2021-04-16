@@ -1,0 +1,30 @@
+{
+    "repository": "RUL",
+    "include": [
+        "timeseries/index.json",
+        "regression/index.json"
+    ],
+    "components": [
+        {
+            "name": "sklearn.pipeline.make_pipeline",
+            "providedInterface": [
+                "MLPipeline",
+                "AbstractRegressor"
+            ],
+            "requiredInterface": [
+                {
+                    "id": "regressor",
+                    "name": "BasicRegressor"
+                },
+                {
+                    "id": "timeseries_feature_generator",
+                    "name": "TimeSeriesFeatureGenerator",
+                    "min": 1,
+                    "max": 2,
+                    "unique": "true"
+                }
+            ],
+            "parameters": []
+        }
+    ]
+}

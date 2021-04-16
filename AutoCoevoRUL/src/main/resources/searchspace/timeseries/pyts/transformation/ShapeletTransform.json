@@ -1,0 +1,46 @@
+{
+    "repository": "pyts.transformation.ShapeletTransform",
+    "components": [
+      {
+        "name": "pyts.transformation.ShapeletTransform",
+        "providedInterface": [
+          "UnivariateTSFeatureGenerator"
+        ],
+        "requiredInterface": [],
+        "parameters": [
+          {
+            "name": "n_shapelets",
+            "type": "int",
+            "default": "{$instance_lengt}",
+            "min": 1,
+            "max": "{$instance_lengt}",
+            "minInterval": 1,
+            "refineSplits": 8
+          },{
+            "name": "criterion",
+            "type": "cat",
+            "default": "mutual_info",
+            "values" : [ "mutual_info", "anova" ]
+          },{
+            "name": "remove_similar",
+            "type": "cat",
+            "default": "True",
+            "values" : [ "True", "False" ]
+          },{
+            "name": "sort",
+            "type": "cat",
+            "default": "False",
+            "values" : [ "True", "False" ]
+          },{
+            "name": "n_jobs",
+            "type": "int",
+            "default": 1,
+            "min": 1,
+            "max": 1,
+            "minInterval": 1,
+            "refineSplits": 1
+          }
+        ]
+      }    
+    ]
+  }

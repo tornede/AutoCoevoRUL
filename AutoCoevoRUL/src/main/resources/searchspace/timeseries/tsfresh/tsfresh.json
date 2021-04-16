@@ -1,0 +1,21 @@
+{
+    "repository": "timeseries.tsfresh",
+    "include": [
+      "./featureset/index.json"
+    ],
+    "components": [
+      {
+        "name": "python_connection.feature_generation.tsfresh_feature_generator.TsFreshBasedFeatureExtractor",
+        "providedInterface": [
+          "TimeSeriesFeatureGenerator"
+        ],
+        "requiredInterface": [
+          {
+            "id": "default_fc_parameters",
+            "name": "tsfreshFeatureSet"
+          }
+        ],
+        "parameters": []
+      }
+    ]
+  }

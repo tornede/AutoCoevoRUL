@@ -1,0 +1,82 @@
+{
+    "repository": "pyts.transformation.BOSS",
+    "components": [
+      {
+        "name": "pyts.transformation.BOSS",
+        "providedInterface": [
+          "UnivariateTSFeatureGenerator"
+        ],
+        "requiredInterface": [],
+        "parameters": [
+          {
+            "name": "word_size",
+            "type": "int",
+            "default": 4,
+            "min": 1,
+            "max": 20,
+            "minInterval": 1,
+            "refineSplits": 8
+          },{
+            "name": "n_bins",
+            "type": "int",
+            "default": 4,
+            "min": 2,
+            "max": 8,
+            "minInterval": 1,
+            "refineSplits": 8
+          },{
+            "name": "strategy",
+            "type": "cat",
+            "default": "normal",
+            "values" : [ "uniform", "quantile", "normal", "entropy" ]
+          },{
+            "name": "window_size",
+            "type": "double",
+            "default": 0.5,
+            "min": 0.0,
+            "max": 1.0,
+            "minInterval": 0.01,
+            "refineSplits": 8
+          },{
+            "name": "window_step",
+            "type": "double",
+            "default": 1.0,
+            "min": 0.0,
+            "max": 1.0,
+            "minInterval": 0.01,
+            "refineSplits": 8
+          },{
+            "name": "anova",
+            "type": "cat",
+            "default": "False",
+            "values" : [ "False" ]
+          },{
+            "name": "drop_sum",
+            "type": "cat",
+            "default": "False",
+            "values" : [ "True", "False" ]
+          },{
+            "name": "norm_mean",
+            "type": "cat",
+            "default": "False",
+            "values" : [ "True", "False" ]
+          },{
+            "name": "norm_std",
+            "type": "cat",
+            "default": "False",
+            "values" : [ "True", "False" ]
+          },{
+            "name": "numerosity_reduction",
+            "type": "cat",
+            "default": "True",
+            "values" : [ "True", "False" ]
+          },{
+            "name": "sparse",
+            "type": "cat",
+            "default": "False",
+            "values" : [ "False" ]
+          }
+        ]
+      }    
+    ]
+  }
