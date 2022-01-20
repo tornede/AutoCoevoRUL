@@ -13,15 +13,15 @@ class ZeroMaskingStrategy(MaskingStrategy):
 
     def extend_instance(self, instance: list, maximum_length: int):
         while len(instance) < maximum_length:
-            instance.append(0)
+            instance.insert(0, 0)
 
 
-class LastValueMaskingStrategy(MaskingStrategy):
+class FirstValueMaskingStrategy(MaskingStrategy):
 
     def extend_instance(self, instance: list, maximum_length: int):
-        last_value = instance[len(instance) - 1]
+        first_value = instance[0]
         while len(instance) < maximum_length:
-            instance.append(last_value)
+            instance.insert(0, first_value)
 
 
 class RandomValueMaskingStrategy(MaskingStrategy):
@@ -34,7 +34,7 @@ class RandomValueMaskingStrategy(MaskingStrategy):
         while len(instance) < maximum_length:
             random_value = minimum_value if minimum_value == maximum_value else \
                 np.random.uniform(minimum_value, maximum_value, 1)[0]
-            instance.append(random_value)
+            instance.insert(0, random_value)
 
 
 """
