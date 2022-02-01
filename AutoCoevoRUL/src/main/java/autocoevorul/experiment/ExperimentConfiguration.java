@@ -190,7 +190,7 @@ public class ExperimentConfiguration {
 		try {
 			dataset = ArffDatasetAdapter.readDataset(new File(filePath));
 		} catch (Exception e) {
-			throw new ExperimentEvaluationFailedException("Could not deserialize dataset: " + filePath, e);
+			throw new ExperimentEvaluationFailedException("Could not deserialize dataset: " + new File(filePath).getAbsolutePath(), e);
 		}
 		LOGGER.info("Data {} read. Time to create dataset object was {}ms", filePath, System.currentTimeMillis() - start);
 		return dataset;

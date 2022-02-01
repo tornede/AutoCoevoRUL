@@ -96,7 +96,7 @@
 	</logger>
 
 
-	<logger name="pipeline_performance_estimation">
+	<logger name="autocoevorul">
 		<level value="debug" />
 		<appender-ref ref="console" />
 		<appender-ref ref="infoFileAppender" />
@@ -106,7 +106,7 @@
 	</logger>
 
 	<logger
-		name="pipeline_performance_estimation.SearchConfiguration">
+		name="autocoevorul.SearchResult">
 		<level value="info" />
 		<appender-ref ref="console" />
 		<appender-ref ref="infoFileAppender" />
@@ -116,7 +116,7 @@
 	</logger>
 	
 	<logger
-		name="pipeline_performance_estimation.CoevolutionRunner">
+		name="autocoevorul.AutoCoevolutionRunner">
 		<level value="info" />
 		<appender-ref ref="console" />
 		<appender-ref ref="infoFileAppender" />
@@ -126,7 +126,7 @@
 	</logger>
 	
 	<logger
-		name="pipeline_performance_estimation.randomsearch.RandomSearchRunner">
+		name="autocoevorul.baseline.randomsearch.RandomSearchRunner">
 		<level value="info" />
 		<appender-ref ref="console" />
 		<appender-ref ref="infoFileAppender" />
@@ -136,7 +136,7 @@
 	</logger>
 	
 	<logger
-		name="pipeline_performance_estimation.mlplan.MLPlanRunner">
+		name="autocoevorul.baseline.mlplan.MLPlanRunner">
 		<level value="info" />
 		<appender-ref ref="console" />
 		<appender-ref ref="infoFileAppender" />
@@ -168,7 +168,7 @@
 
 	<logger
 		name="ai.libs.jaicore.ml.scikitwrapper.ScikitLearnWrapper">
-		<level value="info" />
+		<level value="debug" />
 	</logger>
 
 	<logger

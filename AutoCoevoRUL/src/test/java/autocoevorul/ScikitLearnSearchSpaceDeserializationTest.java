@@ -32,31 +32,33 @@ public class ScikitLearnSearchSpaceDeserializationTest {
 
 	public static Stream<Arguments> provideRepositoriesToTest() {
 		return Stream.of(
-				/* Timeseries Feature Extraction */
+				/* pyts */
 				Arguments.of(BASE_PATH + "timeseries/pyts/transformation/BagOfPatterns.json", 1), //
 				Arguments.of(BASE_PATH + "timeseries/pyts/transformation/Boss.json", 1), //
 				Arguments.of(BASE_PATH + "timeseries/pyts/transformation/Rocket.json", 1), //
 				Arguments.of(BASE_PATH + "timeseries/pyts/transformation/ShapeletTransform.json", 1), //
 				Arguments.of(BASE_PATH + "timeseries/pyts/transformation/Weasel.json", 1), //
 				Arguments.of(BASE_PATH + "timeseries/pyts/transformation/UltraFastShapelets.json", 1), //
-				Arguments.of(BASE_PATH + "timeseries/pyts/pyts.json", 10), //
-
-				Arguments.of(BASE_PATH + "timeseries/tsfresh/featureset/FCParametersDictionary.json", 1), //
-				Arguments.of(BASE_PATH + "timeseries/tsfresh/featureset/LowComputationTimeFCParameters.json", 1), //
-				Arguments.of(BASE_PATH + "timeseries/tsfresh/featureset/MidComputationTimeFCParameters.json", 1), //
-				Arguments.of(BASE_PATH + "timeseries/tsfresh/tsfresh.json", 4), //
-
-				Arguments.of(BASE_PATH + "timeseries/index.json", 14), //
+				Arguments.of(BASE_PATH + "timeseries/pyts/transformation/index.json", 2), //
 
 				/* Masking Strategies */
 				Arguments.of(BASE_PATH + "timeseries/pyts/masking/index.json", 3), //
+				Arguments.of(BASE_PATH + "timeseries/pyts/pyts.json", 6), //
+		
+				/* tsfresh */
+				Arguments.of(BASE_PATH + "timeseries/tsfresh/featureset/FCParametersDictionary.json", 1), //
+				Arguments.of(BASE_PATH + "timeseries/tsfresh/tsfresh.json", 2), //
+
+				/* all ts feature elements*/
+
+				Arguments.of(BASE_PATH + "timeseries/index.json", 8), //
 
 				/* Regressors */
 				Arguments.of(BASE_PATH + "regression/mlpregressor.json", 1), //
 				Arguments.of(BASE_PATH + "regression/index.json", 8), //
 
 				/* RUL */
-				Arguments.of(BASE_PATH + "rul.json", 23) //
+				Arguments.of(BASE_PATH + "rul.json", 17) //
 		);
 	}
 

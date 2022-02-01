@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
@@ -20,6 +22,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.moeaframework.core.Solution;
 import org.moeaframework.core.variable.BinaryIntegerVariable;
+
+import com.google.common.hash.Hashing;
 
 import ai.libs.jaicore.components.api.IComponentInstance;
 import ai.libs.jaicore.components.api.IParameter;
@@ -86,17 +90,17 @@ public class TSFreshFeatureGenerationTest extends AbstractTest {
 
 		sklearnWrapper.fitAndPredict(this.getExperimentConfiguration().getTrainingData(), this.getExperimentConfiguration().getEvaluationData());
 
-		String transformedTrainingDatasetName = this.getHashCodeForSolutionDecoding(solutionDecoding) + "_" + this.getExperimentConfiguration().getDatasetName() + "_train.arff";
-		ILabeledDataset<ILabeledInstance> transformedTrainingDataset = this.getExperimentConfiguration().readDataFile("tmp/" + transformedTrainingDatasetName);
+		String transformedTrainingDatasetName = this.getHashCodeForSolutionDecoding(solutionDecoding) + "_" + "CMAPSS_train_FD001.arff";
+		ILabeledDataset<ILabeledInstance> transformedTrainingDataset = this.getExperimentConfiguration().readDataFile("tmp/tmp1/" + transformedTrainingDatasetName);
 		assertEquals(this.getExperimentConfiguration().getTrainingData().getNumAttributes() * 2, transformedTrainingDataset.getNumAttributes());
 
-		String transformedTestDatasetName = this.getHashCodeForSolutionDecoding(solutionDecoding) + "_" + this.getExperimentConfiguration().getDatasetName() + "_test.arff";
-		ILabeledDataset<ILabeledInstance> transformedTestDataset = this.getExperimentConfiguration().readDataFile("tmp/" + transformedTestDatasetName);
+		String transformedTestDatasetName = this.getHashCodeForSolutionDecoding(solutionDecoding) + "_" + "CMAPSS_train_FD001.arff";
+		ILabeledDataset<ILabeledInstance> transformedTestDataset = this.getExperimentConfiguration().readDataFile("tmp/tmp1/" + transformedTestDatasetName);
 		assertEquals(this.getExperimentConfiguration().getEvaluationData().getNumAttributes() * 2, transformedTestDataset.getNumAttributes());
 	}
 
 	public String getHashCodeForSolutionDecoding(final SolutionDecoding solutionDecoding) {
-		String hashCode = StringUtils.join(solutionDecoding.getConstructionInstruction(), solutionDecoding.getImports()).hashCode() + "";
+		String hashCode = Hashing.sha256().hashString(StringUtils.join(solutionDecoding.getConstructionInstruction(), solutionDecoding.getImports()), StandardCharsets.UTF_8).toString();
 		return hashCode.startsWith("-") ? hashCode.replace("-", "1") : "0" + hashCode;
 	}
 }

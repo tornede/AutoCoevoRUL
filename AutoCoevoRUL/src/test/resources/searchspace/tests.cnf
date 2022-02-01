@@ -1,7 +1,7 @@
 cpu.max = 6
 
 experimentId = 1
-dataPath = ../../Data/
+dataPath = ../Data/
 datasetName = CMAPSS/FD001_train.arff
 seed = 42
 numberOfFolds = 2

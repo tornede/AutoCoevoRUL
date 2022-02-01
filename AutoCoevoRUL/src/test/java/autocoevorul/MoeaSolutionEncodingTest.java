@@ -28,10 +28,10 @@ public class MoeaSolutionEncodingTest extends AbstractTest {
 		Solution solution = this.getEmptySolution(this.getExperimentConfiguration(), genomeHandler);
 		((BinaryVariable) solution.getVariable(65)).set(0, true);
 		((BinaryVariable) solution.getVariable(68)).set(0, true);
-		((BinaryIntegerVariable) solution.getVariable(69)).setValue(5);
-		((BinaryIntegerVariable) solution.getVariable(70)).setValue(this.getPositionInArray("True", "True", "False"));
-		((BinaryIntegerVariable) solution.getVariable(71)).setValue(this.getPositionInArray("mutual_info", "mutual_info", "anova"));
-		((BinaryIntegerVariable) solution.getVariable(72)).setValue(this.getPositionInArray("False", "True", "False"));
+		((BinaryIntegerVariable) solution.getVariable(69)).setValue(this.getPositionInArray("True", "True", "False"));
+		((BinaryIntegerVariable) solution.getVariable(70)).setValue(this.getPositionInArray("mutual_info", "mutual_info", "anova"));
+		((BinaryIntegerVariable) solution.getVariable(71)).setValue(this.getPositionInArray("False", "True", "False"));
+		((BinaryIntegerVariable) solution.getVariable(72)).setValue(5);
 
 		SolutionDecoding solutionDecoding = genomeHandler.decodeGenome(solution);
 		List<IComponentInstance> componentInstances = solutionDecoding.getComponentInstances();
@@ -65,10 +65,10 @@ public class MoeaSolutionEncodingTest extends AbstractTest {
 
 		Solution solution = this.getEmptySolution(this.getExperimentConfiguration(), genomeHandler);
 		((BinaryVariable) solution.getVariable(68)).set(0, true);
-		((BinaryIntegerVariable) solution.getVariable(69)).setValue(5);
-		((BinaryIntegerVariable) solution.getVariable(70)).setValue(this.getPositionInArray("True", "True", "False"));
-		((BinaryIntegerVariable) solution.getVariable(71)).setValue(this.getPositionInArray("mutual_info", "mutual_info", "anova"));
-		((BinaryIntegerVariable) solution.getVariable(72)).setValue(this.getPositionInArray("False", "True", "False"));
+		((BinaryIntegerVariable) solution.getVariable(69)).setValue(this.getPositionInArray("True", "True", "False"));
+		((BinaryIntegerVariable) solution.getVariable(70)).setValue(this.getPositionInArray("mutual_info", "mutual_info", "anova"));
+		((BinaryIntegerVariable) solution.getVariable(71)).setValue(this.getPositionInArray("False", "True", "False"));
+		((BinaryIntegerVariable) solution.getVariable(72)).setValue(5);
 
 		SolutionDecoding solutionDecoding = genomeHandler.decodeGenome(solution);
 		assertNull(solutionDecoding);
@@ -81,10 +81,10 @@ public class MoeaSolutionEncodingTest extends AbstractTest {
 		Solution solution = this.getEmptySolution(this.getExperimentConfiguration(), genomeHandler);
 		((BinaryVariable) solution.getVariable(65)).set(0, true);
 		((BinaryVariable) solution.getVariable(68)).set(0, true);
-		((BinaryIntegerVariable) solution.getVariable(69)).setValue(5);
-		((BinaryIntegerVariable) solution.getVariable(70)).setValue(this.getPositionInArray("True", "True", "False"));
-		((BinaryIntegerVariable) solution.getVariable(71)).setValue(this.getPositionInArray("mutual_info", "mutual_info", "anova"));
-		((BinaryIntegerVariable) solution.getVariable(72)).setValue(this.getPositionInArray("False", "True", "False"));
+		((BinaryIntegerVariable) solution.getVariable(69)).setValue(this.getPositionInArray("True", "True", "False"));
+		((BinaryIntegerVariable) solution.getVariable(70)).setValue(this.getPositionInArray("mutual_info", "mutual_info", "anova"));
+		((BinaryIntegerVariable) solution.getVariable(71)).setValue(this.getPositionInArray("False", "True", "False"));
+		((BinaryIntegerVariable) solution.getVariable(72)).setValue(5);
 
 		SolutionDecoding solutionDecoding = genomeHandler.decodeGenome(solution);
 		List<IComponentInstance> componentInstances = solutionDecoding.getComponentInstances();
@@ -111,10 +111,10 @@ public class MoeaSolutionEncodingTest extends AbstractTest {
 		((BinaryIntegerVariable) solution.getVariable(0)).setValue(this.getPositionInArray("True", "True", "False"));
 		((BinaryVariable) solution.getVariable(65)).set(0, true);
 		((BinaryVariable) solution.getVariable(68)).set(0, true);
-		((BinaryIntegerVariable) solution.getVariable(69)).setValue(5);
-		((BinaryIntegerVariable) solution.getVariable(70)).setValue(this.getPositionInArray("True", "True", "False"));
-		((BinaryIntegerVariable) solution.getVariable(71)).setValue(this.getPositionInArray("mutual_info", "mutual_info", "anova"));
-		((BinaryIntegerVariable) solution.getVariable(72)).setValue(this.getPositionInArray("False", "True", "False"));
+		((BinaryIntegerVariable) solution.getVariable(69)).setValue(this.getPositionInArray("True", "True", "False"));
+		((BinaryIntegerVariable) solution.getVariable(70)).setValue(this.getPositionInArray("mutual_info", "mutual_info", "anova"));
+		((BinaryIntegerVariable) solution.getVariable(71)).setValue(this.getPositionInArray("False", "True", "False"));
+		((BinaryIntegerVariable) solution.getVariable(72)).setValue(5);
 
 		SolutionDecoding solutionDecoding = genomeHandler.decodeGenome(solution);
 		List<IComponentInstance> componentInstances = solutionDecoding.getComponentInstances();
@@ -162,10 +162,10 @@ public class MoeaSolutionEncodingTest extends AbstractTest {
 		((BinaryIntegerVariable) solution.getVariable(0)).setValue(this.getPositionInArray("True", "True", "False"));
 		((BinaryVariable) solution.getVariable(66)).set(0, false);
 		((BinaryVariable) solution.getVariable(68)).set(0, false);
-		((BinaryIntegerVariable) solution.getVariable(69)).setValue(5);
-		((BinaryIntegerVariable) solution.getVariable(70)).setValue(this.getPositionInArray("True", "True", "False"));
-		((BinaryIntegerVariable) solution.getVariable(71)).setValue(this.getPositionInArray("mutual_info", "mutual_info", "anova"));
-		((BinaryIntegerVariable) solution.getVariable(72)).setValue(this.getPositionInArray("False", "True", "False"));
+		((BinaryIntegerVariable) solution.getVariable(69)).setValue(this.getPositionInArray("True", "True", "False"));
+		((BinaryIntegerVariable) solution.getVariable(70)).setValue(this.getPositionInArray("mutual_info", "mutual_info", "anova"));
+		((BinaryIntegerVariable) solution.getVariable(71)).setValue(this.getPositionInArray("False", "True", "False"));
+		((BinaryIntegerVariable) solution.getVariable(72)).setValue(5);
 
 		SolutionDecoding solutionDecoding = genomeHandler.decodeGenome(solution);
 		List<IComponentInstance> componentInstances = solutionDecoding.getComponentInstances();
