@@ -23,7 +23,7 @@ import com.google.common.eventbus.EventBus;
 import ai.libs.jaicore.basic.sets.Pair;
 import ai.libs.jaicore.components.api.IComponentInstance;
 import ai.libs.jaicore.ml.regression.singlelabel.SingleTargetRegressionPrediction;
-import ai.libs.jaicore.ml.scikitwrapper.ScikitLearnWrapper;
+import ai.libs.jaicore.ml.scikitwrapper.ScikitLearnTimeSeriesRegressionWrapper;
 import ai.libs.jaicore.timing.TimedComputation;
 import ai.libs.mlplan.sklearn.AScikitLearnLearnerFactory;
 import autocoevorul.SearchResult;
@@ -78,7 +78,7 @@ public abstract class AbstractCompletePipelineEvaluator implements Runnable {
 					throw new InterruptedException();
 				}
 
-				ScikitLearnWrapper<IPrediction, IPredictionBatch> learner = this.setupScikitlearnWrapper(constructionInstruction, imports, this.timeout);
+				ScikitLearnTimeSeriesRegressionWrapper<IPrediction, IPredictionBatch> learner = this.setupScikitlearnWrapper(constructionInstruction, imports, this.timeout);
 				IPredictionBatch predictionsForSplit = this.runScikitLearnWrapper(learner, i, this.timeout);
 
 				List<IRegressionPrediction> doublePredictionsForSplit = predictionsForSplit.getPredictions().stream()
@@ -118,9 +118,9 @@ public abstract class AbstractCompletePipelineEvaluator implements Runnable {
 		return this.datasetSplitSet.getFolds(split).get(1);
 	}
 
-	protected abstract ScikitLearnWrapper<IPrediction, IPredictionBatch> setupScikitlearnWrapper(String constructionInstruction, String imports, final Timeout timeout) throws IOException;
+	protected abstract ScikitLearnTimeSeriesRegressionWrapper<IPrediction, IPredictionBatch> setupScikitlearnWrapper(String constructionInstruction, String imports, final Timeout timeout) throws IOException, InterruptedException;
 
-	private IPredictionBatch runScikitLearnWrapper(final ScikitLearnWrapper<IPrediction, IPredictionBatch> scikitLearnWrapper, final int split, final Timeout timeout)
+	private IPredictionBatch runScikitLearnWrapper(final ScikitLearnTimeSeriesRegressionWrapper<IPrediction, IPredictionBatch> scikitLearnWrapper, final int split, final Timeout timeout)
 			throws AlgorithmTimeoutedException, ExecutionException, InterruptedException {
 		return TimedComputation.compute(() -> scikitLearnWrapper.fitAndPredict(this.getTrainingDataset(split), this.getTestingDataset(split)), timeout, "Pipeline execution interrupted.");
 	}

@@ -1,9 +1,9 @@
 cpu.max = 7
 mem.max = 10000
 
-dataPath = ../../data/
+dataPath = ../data/
 numberOfFolds = 3
-totalTimeout = 4:HOURS
+totalTimeout = 10:MINUTES
 
 rulSearchspace = searchspace/rul.json
 rulRulRootComponentName = sklearn.pipeline.make_pipeline
@@ -13,7 +13,7 @@ featureRequiredInterface = TimeSeriesFeatureGenerator
 featureMainComponentNames = python_connection.feature_generation.tsfresh_feature_generator.FCParametersDictionary, pyts.transformation.ROCKET, python_connection.feature_generation.ultra_fast_shapelets_feature_generator.UltraFastShapeletsFeatureExtractor
 featureMainComponentNamesWithoutActivationBit = python_connection.feature_generation.tsfresh_feature_generator.FCParametersDictionary
 featurePythonTemplatePath = ../python_connection/run.py
-featureCandidateTimeout = 21:MINUTES
+featureCandidateTimeout = 5:MINUTES
 featurePopulationSize = 7
 
 regressionSearchpace = searchspace/regression/index.json

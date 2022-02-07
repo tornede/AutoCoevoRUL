@@ -11,10 +11,9 @@ import org.api4.java.algorithm.Timeout;
 import com.google.common.eventbus.EventBus;
 
 import ai.libs.jaicore.components.api.IComponentInstance;
-import ai.libs.jaicore.ml.core.EScikitLearnProblemType;
-import ai.libs.jaicore.ml.scikitwrapper.ScikitLearnWrapper;
+import ai.libs.jaicore.ml.scikitwrapper.ScikitLearnTimeSeriesRegressionWrapper;
 import ai.libs.mlplan.sklearn.AScikitLearnLearnerFactory;
-import ai.libs.mlplan.sklearn.ScikitLearnRULFactory;
+import ai.libs.mlplan.sklearn.ScikitLearnTimeSeriesRegressionFactory;
 import autocoevorul.SearchResult;
 import autocoevorul.experiment.ExperimentConfiguration;
 
@@ -26,8 +25,8 @@ public class RulCompletePipelineEvaluator extends AbstractCompletePipelineEvalua
 	}
 
 	@Override
-	protected ScikitLearnWrapper<IPrediction, IPredictionBatch> setupScikitlearnWrapper(final String constructionInstruction, final String imports, final Timeout timeout) throws IOException {
-		ScikitLearnWrapper<IPrediction, IPredictionBatch> sklearnWrapper = new ScikitLearnWrapper<>(constructionInstruction, imports, false, EScikitLearnProblemType.RUL);
+	protected ScikitLearnTimeSeriesRegressionWrapper<IPrediction, IPredictionBatch> setupScikitlearnWrapper(final String constructionInstruction, final String imports, final Timeout timeout) throws IOException, InterruptedException {
+		ScikitLearnTimeSeriesRegressionWrapper<IPrediction, IPredictionBatch> sklearnWrapper = new ScikitLearnTimeSeriesRegressionWrapper<>(constructionInstruction, imports);
 		sklearnWrapper.setScikitLearnWrapperConfig(this.experimentConfiguration.getScikitLearnWrapperConfig());
 		sklearnWrapper.setTimeout(timeout);
 		sklearnWrapper.setSeed(this.experimentConfiguration.getSeed());
@@ -38,7 +37,7 @@ public class RulCompletePipelineEvaluator extends AbstractCompletePipelineEvalua
 
 	@Override
 	protected AScikitLearnLearnerFactory getScikitLearnLearnerFactory() {
-		return new ScikitLearnRULFactory();
+		return new ScikitLearnTimeSeriesRegressionFactory();
 	}
 
 }

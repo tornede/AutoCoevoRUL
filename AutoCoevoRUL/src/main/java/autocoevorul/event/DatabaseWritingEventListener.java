@@ -25,7 +25,7 @@ import ai.libs.jaicore.db.sql.DatabaseAdapterFactory;
 import ai.libs.jaicore.ml.core.evaluation.evaluator.events.TrainTestSplitEvaluationFailedEvent;
 import ai.libs.jaicore.ml.regression.singlelabel.SingleTargetRegressionPrediction;
 import ai.libs.jaicore.ml.regression.singlelabel.SingleTargetRegressionPredictionBatch;
-import ai.libs.jaicore.ml.scikitwrapper.ScikitLearnWrapper;
+import ai.libs.jaicore.ml.scikitwrapper.AScikitLearnWrapper;
 import ai.libs.mlplan.core.events.ClassifierFoundEvent;
 import autocoevorul.experiment.ExperimentConfiguration;
 
@@ -201,9 +201,9 @@ public class DatabaseWritingEventListener {
 	@SuppressWarnings("unchecked")
 	@Subscribe
 	public void rcvClassifierFoundEvent(final ClassifierFoundEvent event) throws SQLException {
-		ScikitLearnWrapper<SingleTargetRegressionPrediction, SingleTargetRegressionPredictionBatch> learner = null;
-		if (event.getSolutionCandidate() instanceof ScikitLearnWrapper) {
-			learner = (ScikitLearnWrapper) event.getSolutionCandidate();
+		AScikitLearnWrapper<SingleTargetRegressionPrediction, SingleTargetRegressionPredictionBatch> learner = null;
+		if (event.getSolutionCandidate() instanceof AScikitLearnWrapper) {
+			learner = (AScikitLearnWrapper<SingleTargetRegressionPrediction, SingleTargetRegressionPredictionBatch>) event.getSolutionCandidate();
 			// this.logCandidateEvaluation("success", learner.toString(), event.getInSampleError() + "", event.getTimeToEvaluate() + "ms");
 
 			this.receiveRegressorEvaluatedEvent(new RegressorEvaluatedEvent(learner.toString(), "", "", event.getInSampleError(), Arrays.asList((long) event.getTimeToEvaluate()), ""));
@@ -213,9 +213,9 @@ public class DatabaseWritingEventListener {
 
 	@Subscribe
 	public void rcvTrainTestSplitEvaluationFailedEvent(final TrainTestSplitEvaluationFailedEvent<ILabeledInstance, ILabeledDataset<? extends ILabeledInstance>> event) throws SQLException {
-		ScikitLearnWrapper<SingleTargetRegressionPrediction, SingleTargetRegressionPredictionBatch> learner = null;
-		if (event.getLearner() instanceof ScikitLearnWrapper) {
-			learner = (ScikitLearnWrapper) event.getLearner();
+		AScikitLearnWrapper<SingleTargetRegressionPrediction, SingleTargetRegressionPredictionBatch> learner = null;
+		if (event.getLearner() instanceof AScikitLearnWrapper) {
+			learner = (AScikitLearnWrapper<SingleTargetRegressionPrediction, SingleTargetRegressionPredictionBatch>) event.getLearner();
 		}
 		if (learner != null) {
 			ILearnerRunReport report = event.getFirstReport();

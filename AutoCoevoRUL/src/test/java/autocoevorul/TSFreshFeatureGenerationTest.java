@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
@@ -29,8 +28,7 @@ import ai.libs.jaicore.components.api.IComponentInstance;
 import ai.libs.jaicore.components.api.IParameter;
 import ai.libs.jaicore.components.exceptions.ComponentNotFoundException;
 import ai.libs.jaicore.experiments.exceptions.ExperimentEvaluationFailedException;
-import ai.libs.jaicore.ml.core.EScikitLearnProblemType;
-import ai.libs.jaicore.ml.scikitwrapper.ScikitLearnWrapper;
+import ai.libs.jaicore.ml.scikitwrapper.ScikitLearnTimeSeriesFeatureEngineeringWrapper;
 import autocoevorul.featurerextraction.GenomeHandler;
 import autocoevorul.featurerextraction.SolutionDecoding;
 
@@ -82,8 +80,7 @@ public class TSFreshFeatureGenerationTest extends AbstractTest {
 		}
 
 		System.out.println(solutionDecoding.getConstructionInstruction());
-		ScikitLearnWrapper<IPrediction, IPredictionBatch> sklearnWrapper = new ScikitLearnWrapper<>(solutionDecoding.getConstructionInstruction(), solutionDecoding.getImports(), false,
-				EScikitLearnProblemType.FEATURE_ENGINEERING);
+		ScikitLearnTimeSeriesFeatureEngineeringWrapper<IPrediction, IPredictionBatch> sklearnWrapper = new ScikitLearnTimeSeriesFeatureEngineeringWrapper<>(solutionDecoding.getConstructionInstruction(), solutionDecoding.getImports());
 		sklearnWrapper.setPythonTemplate(PYTHON_TEMPLATE_PATH);
 		sklearnWrapper.setTimeout(this.getExperimentConfiguration().getFeatureCandidateTimeoutPerFold());
 		sklearnWrapper.setSeed(1234);

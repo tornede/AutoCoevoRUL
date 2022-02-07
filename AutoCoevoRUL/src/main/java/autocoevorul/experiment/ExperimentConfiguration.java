@@ -188,7 +188,7 @@ public class ExperimentConfiguration {
 		long start = System.currentTimeMillis();
 		ILabeledDataset<ILabeledInstance> dataset;
 		try {
-			dataset = ArffDatasetAdapter.readDataset(new File(filePath));
+			dataset = new ArffDatasetAdapter().readDataset(new File(filePath));
 		} catch (Exception e) {
 			throw new ExperimentEvaluationFailedException("Could not deserialize dataset: " + new File(filePath).getAbsolutePath(), e);
 		}

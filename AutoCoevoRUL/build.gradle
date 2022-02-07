@@ -13,7 +13,7 @@ repositories {
 
 dependencies {
 
-    implementation('com.github.starlibs:AILibs:e7414b4732'){
+    implementation('com.github.starlibs:ailibs:mlplan-sklearn~bugfix-searchspace-and-factory-SNAPSHOT'){
     	exclude group: 'mysql', module: 'mysql-connector-java'
     	}
     implementation('com.github.mwever:moeaframework:e6f6b1a007')

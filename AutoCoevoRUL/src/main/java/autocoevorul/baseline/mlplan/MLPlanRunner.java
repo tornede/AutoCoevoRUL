@@ -27,10 +27,10 @@ import ai.libs.jaicore.experiments.databasehandle.ExperimenterMySQLHandle;
 import ai.libs.jaicore.experiments.exceptions.ExperimentDBInteractionFailedException;
 import ai.libs.jaicore.experiments.exceptions.ExperimentEvaluationFailedException;
 import ai.libs.jaicore.ml.core.evaluation.evaluator.factory.MonteCarloCrossValidationEvaluatorFactory;
-import ai.libs.jaicore.ml.scikitwrapper.ScikitLearnWrapper;
-import ai.libs.mlplan.core.MLPlan;
+import ai.libs.jaicore.ml.scikitwrapper.ScikitLearnTimeSeriesRegressionWrapper;
 import ai.libs.mlplan.core.TasksAlreadyResolvedPathEvaluator;
 import ai.libs.mlplan.sklearn.EMLPlanScikitLearnProblemType;
+import ai.libs.mlplan.sklearn.MLPlan4ScikitLearn;
 import ai.libs.mlplan.sklearn.builder.MLPlanScikitLearnBuilder;
 import autocoevorul.AbstractRunner;
 import autocoevorul.SearchResult;
@@ -87,17 +87,17 @@ public class MLPlanRunner extends AbstractRunner {
 				builder.withCandidateEvaluationTimeOut(experimentConfiguration.getRulTimeout());
 				builder.withSeed(experimentConfiguration.getSeed());
 
-				MLPlan<ScikitLearnWrapper<IPrediction, IPredictionBatch>> mlplan = builder.withDataset(experimentConfiguration.getTrainingData()).build();
+				MLPlan4ScikitLearn mlplan = new MLPlan4ScikitLearn(builder, experimentConfiguration.getTrainingData());
 				mlplan.setPortionOfDataForPhase2(0f);
 				mlplan.setLoggerName("mlplan");
 				mlplan.registerListener(new DatabaseWritingEventListener(experimentConfiguration, dbConfig, executor));
 
 				SearchResult searchResult = new SearchResult(new EventBus());
-				ScikitLearnWrapper<IPrediction, IPredictionBatch> optimizedRegressor = null;
+				ScikitLearnTimeSeriesRegressionWrapper<IPrediction, IPredictionBatch> optimizedRegressor = null;
 
 				long start = System.currentTimeMillis();
 				try {
-					optimizedRegressor = mlplan.call();
+					optimizedRegressor = (ScikitLearnTimeSeriesRegressionWrapper<IPrediction, IPredictionBatch>) mlplan.call();
 					searchResult.update(new PipelineEvaluationReport(optimizedRegressor.toString(), "", mlplan.getInternalValidationErrorOfSelectedClassifier(), start, System.currentTimeMillis()));
 
 				} catch (Exception e) {

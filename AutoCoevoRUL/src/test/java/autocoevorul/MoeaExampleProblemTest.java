@@ -16,8 +16,7 @@ import org.moeaframework.core.variable.BinaryIntegerVariable;
 import org.moeaframework.core.variable.BinaryVariable;
 
 import ai.libs.jaicore.components.api.IComponentInstance;
-import ai.libs.jaicore.ml.core.EScikitLearnProblemType;
-import ai.libs.jaicore.ml.scikitwrapper.ScikitLearnWrapper;
+import ai.libs.jaicore.ml.scikitwrapper.ScikitLearnTimeSeriesFeatureEngineeringWrapper;
 import ai.libs.mlplan.sklearn.ScikitLearnClassifierFactory;
 import autocoevorul.experiment.ExperimentConfiguration;
 import autocoevorul.featurerextraction.GenomeHandler;
@@ -67,7 +66,7 @@ public class MoeaExampleProblemTest extends AbstractTest {
 			imports.append(importString);
 		}
 
-		ScikitLearnWrapper<IPrediction, IPredictionBatch> sklearnWrapper = new ScikitLearnWrapper<>(constructionString, imports.toString(), false, EScikitLearnProblemType.FEATURE_ENGINEERING);
+		ScikitLearnTimeSeriesFeatureEngineeringWrapper<IPrediction, IPredictionBatch> sklearnWrapper = new ScikitLearnTimeSeriesFeatureEngineeringWrapper<>(constructionString, imports.toString());
 		sklearnWrapper.setPythonTemplate(PYTHON_TEMPLATE_PATH);
 		sklearnWrapper.fitAndPredict(this.getExperimentConfiguration().getTrainingData(), this.getExperimentConfiguration().getEvaluationData());
 	}

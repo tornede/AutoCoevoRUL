@@ -1,6 +1,10 @@
 package autocoevorul.regression;
 
+import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,12 +31,13 @@ import com.google.common.hash.Hashing;
 
 import ai.libs.jaicore.basic.sets.Pair;
 import ai.libs.jaicore.components.api.IComponentInstance;
-import ai.libs.jaicore.ml.core.EScikitLearnProblemType;
 import ai.libs.jaicore.ml.core.evaluation.AveragingPredictionPerformanceMeasure;
 import ai.libs.jaicore.ml.core.evaluation.evaluator.LearnerRunReport;
 import ai.libs.jaicore.ml.core.evaluation.evaluator.TypelessPredictionDiff;
 import ai.libs.jaicore.ml.regression.singlelabel.SingleTargetRegressionPrediction;
-import ai.libs.jaicore.ml.scikitwrapper.ScikitLearnWrapper;
+import ai.libs.jaicore.ml.scikitwrapper.AScikitLearnWrapper;
+import ai.libs.jaicore.ml.scikitwrapper.IScikitLearnWrapperConfig;
+import ai.libs.jaicore.ml.scikitwrapper.ScikitLearnRegressionWrapper;
 import ai.libs.jaicore.search.algorithms.standard.bestfirst.nodeevaluation.TimeAwareNodeEvaluator;
 import ai.libs.jaicore.timing.TimedComputation;
 import autocoevorul.event.RegressorEvaluatedEvent;
@@ -95,15 +100,19 @@ public class CompletePipelineEvaluator implements IObjectEvaluator<IComponentIns
 			String testDatasetName = this.getTestDatasetName(featureExtractorHashcode, i);
 
 			ILearnerRunReport report = null;
-			ScikitLearnWrapper<IPrediction, IPredictionBatch> learner = null;
+			ScikitLearnRegressionWrapper<IPrediction, IPredictionBatch> learner = null;
 			try {
 
 				learner = this.createScikitlearnWrapper(componentInstance);
+				
+				File testDatasetFile = this.getTrainingDatasetFile(learner, testDatasetName); // TODO
+				File trainDatasetFile = this.getTrainingDatasetFile(learner, trainDatasetName); // TODO
+				
 				pipeline = learner.toString();
 
 				trainStart = System.currentTimeMillis();
 				// IPredictionBatch predictionsForSplit = learner.fitAndPredict(trainDatasetName, testDatasetName);
-				IPredictionBatch predictionsForSplit = this.fitAndPredictWithWrapperUnderTimeout(learner, trainDatasetName, testDatasetName);
+				IPredictionBatch predictionsForSplit = this.fitAndPredictWithWrapperUnderTimeout(learner, trainDatasetFile, trainDatasetName, testDatasetFile, testDatasetName);
 				trainEnd = System.currentTimeMillis();
 
 				runtimes.add(trainEnd - trainStart);
@@ -158,15 +167,32 @@ public class CompletePipelineEvaluator implements IObjectEvaluator<IComponentIns
 	private String getTrainingDatasetName(final String featureExtractorHashcode, final int fold) {
 		return featureExtractorHashcode + "_" + this.experimentConfiguration.getDatasetName() + "_" + this.experimentConfiguration.getSeed() + "_" + fold + "_train";
 	}
+	
+	private File getTrainingDatasetFile(ScikitLearnRegressionWrapper<IPrediction, IPredictionBatch> learner, final String datasetName) {
+		try {
+			Field f = AScikitLearnWrapper.class.getDeclaredField("scikitLearnWrapperConfig");
+			f.setAccessible(true);
+			
+			Method x = IScikitLearnWrapperConfig.class.getDeclaredMethod("getTempFolder");
+			x.setAccessible(true);
+			
+			File tmpFolder = (File) x.invoke(f.get(learner));
+			return new File(tmpFolder + "/" + datasetName);
+			
+		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchFieldException | NoSuchMethodException | SecurityException e) {
+			throw new RuntimeException("Could not figure out correct file for training or test dataset: " + datasetName);
+		}
+		
+	}
 
-	public IPredictionBatch fitAndPredictWithWrapperUnderTimeout(final ScikitLearnWrapper<IPrediction, IPredictionBatch> wrapper, final String trainDatasetName, final String testDatasetName)
+	public IPredictionBatch fitAndPredictWithWrapperUnderTimeout(final ScikitLearnRegressionWrapper<IPrediction, IPredictionBatch> wrapper, final File trainDatasetFile, final String trainDatasetName, final File testDatasetFile, final String testDatasetName)
 			throws AlgorithmTimeoutedException, ExecutionException, InterruptedException {
-		return TimedComputation.compute(() -> wrapper.fitAndPredict(trainDatasetName, testDatasetName),
+		return TimedComputation.compute(() -> wrapper.fitAndPredict(trainDatasetFile, trainDatasetName, testDatasetFile, testDatasetName),
 				new Timeout(this.experimentConfiguration.getRegressionCandidateTimeout().seconds() + 2, TimeUnit.SECONDS),
 				"Node evaluation has timed out (" + TimeAwareNodeEvaluator.class.getName() + "::" + Thread.currentThread() + "-" + System.currentTimeMillis() + ")");
 	}
 
-	private ScikitLearnWrapper<IPrediction, IPredictionBatch> createScikitlearnWrapper(final IComponentInstance componentInstance) throws IOException {
+	private ScikitLearnRegressionWrapper<IPrediction, IPredictionBatch> createScikitlearnWrapper(final IComponentInstance componentInstance) throws IOException, InterruptedException {
 		List<IComponentInstance> satisfiedRegressorInterfaceInstancesInComponentInstance = componentInstance
 				.getSatisfactionOfRequiredInterface(this.experimentConfiguration.getRegressionRequiredInterface());
 
@@ -177,8 +203,7 @@ public class CompletePipelineEvaluator implements IObjectEvaluator<IComponentIns
 
 		Pair<String, String> constructionInstructionAndImports = ScikitLearnUtil.createConstructionInstructionAndImportsFromComponentInstance(componentInstanceWithoutDummy);
 
-		ScikitLearnWrapper<IPrediction, IPredictionBatch> sklearnWrapper = new ScikitLearnWrapper<>(constructionInstructionAndImports.getX(), constructionInstructionAndImports.getY(), false,
-				EScikitLearnProblemType.REGRESSION);
+		ScikitLearnRegressionWrapper<IPrediction, IPredictionBatch> sklearnWrapper = new ScikitLearnRegressionWrapper<>(constructionInstructionAndImports.getX(), constructionInstructionAndImports.getY());
 		sklearnWrapper.setScikitLearnWrapperConfig(this.experimentConfiguration.getScikitLearnWrapperConfig());
 		sklearnWrapper.setTimeout(this.experimentConfiguration.getRegressionCandidateTimeout());
 		sklearnWrapper.setSeed(this.experimentConfiguration.getSeed());

@@ -27,8 +27,7 @@ import org.slf4j.Logger;
 import com.google.common.eventbus.EventBus;
 
 import ai.libs.jaicore.components.exceptions.ComponentNotFoundException;
-import ai.libs.jaicore.ml.core.EScikitLearnProblemType;
-import ai.libs.jaicore.ml.scikitwrapper.ScikitLearnWrapper;
+import ai.libs.jaicore.ml.scikitwrapper.ScikitLearnTimeSeriesFeatureEngineeringWrapper;
 import ai.libs.jaicore.timing.TimedComputation;
 import autocoevorul.event.UpdatingBestPipelineEvent;
 import autocoevorul.experiment.ExperimentConfiguration;
@@ -90,8 +89,7 @@ public class FeatureExtractionMoeaProblem extends AbstractProblem implements IBa
 						ILabeledDataset<?> trainingData = this.datasetSplitSet.getFolds(s).get(0);
 						ILabeledDataset<?> testingData = this.datasetSplitSet.getFolds(s).get(1);
 
-						ScikitLearnWrapper<IPrediction, IPredictionBatch> sklearnWrapper = new ScikitLearnWrapper<>(solutionDecoding.getConstructionInstruction(), solutionDecoding.getImports(), false,
-								EScikitLearnProblemType.FEATURE_ENGINEERING);
+						ScikitLearnTimeSeriesFeatureEngineeringWrapper<IPrediction, IPredictionBatch> sklearnWrapper = new ScikitLearnTimeSeriesFeatureEngineeringWrapper<>(solutionDecoding.getConstructionInstruction(), solutionDecoding.getImports());
 						sklearnWrapper.setScikitLearnWrapperConfig(this.experimentConfiguration.getScikitLearnWrapperConfig());
 						sklearnWrapper.setPythonTemplate(this.experimentConfiguration.getFeaturePythonTemplatePath());
 						sklearnWrapper.setTimeout(this.experimentConfiguration.getFeatureCandidateTimeoutPerFold());

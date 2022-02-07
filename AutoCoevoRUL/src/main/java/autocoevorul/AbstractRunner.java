@@ -27,10 +27,9 @@ import ai.libs.jaicore.experiments.exceptions.ExperimentAlreadyExistsInDatabaseE
 import ai.libs.jaicore.experiments.exceptions.ExperimentDBInteractionFailedException;
 import ai.libs.jaicore.experiments.exceptions.ExperimentEvaluationFailedException;
 import ai.libs.jaicore.experiments.exceptions.IllegalExperimentSetupException;
-import ai.libs.jaicore.ml.core.EScikitLearnProblemType;
 import ai.libs.jaicore.ml.regression.loss.ERulPerformanceMeasure;
 import ai.libs.jaicore.ml.regression.singlelabel.SingleTargetRegressionPrediction;
-import ai.libs.jaicore.ml.scikitwrapper.ScikitLearnWrapper;
+import ai.libs.jaicore.ml.scikitwrapper.ScikitLearnTimeSeriesRegressionWrapper;
 import autocoevorul.baseline.randomsearch.RandomSearchRunner;
 import autocoevorul.experiment.ExperimentConfiguration;
 import autocoevorul.experiment.ICoevolutionConfig;
@@ -101,8 +100,8 @@ public abstract class AbstractRunner {
 				|| result.getPipelineEvaluationReport().getImports().isEmpty()) {
 			return;
 		}
-		ScikitLearnWrapper<IPrediction, IPredictionBatch> sklearnWrapper = new ScikitLearnWrapper<>(result.getPipelineEvaluationReport().getConstructionInstruction(),
-				result.getPipelineEvaluationReport().getImports(), false, EScikitLearnProblemType.RUL);
+		ScikitLearnTimeSeriesRegressionWrapper<IPrediction, IPredictionBatch> sklearnWrapper = new ScikitLearnTimeSeriesRegressionWrapper<>(result.getPipelineEvaluationReport().getConstructionInstruction(),
+				result.getPipelineEvaluationReport().getImports());
 		sklearnWrapper.setScikitLearnWrapperConfig(experimentConfiguration.getScikitLearnWrapperConfig());
 		sklearnWrapper.setPythonTemplate(experimentConfiguration.getFeaturePythonTemplatePath());
 		sklearnWrapper.setTimeout(experimentConfiguration.getRulTimeout());
@@ -110,7 +109,7 @@ public abstract class AbstractRunner {
 		this.executeFinalPipeline(experimentConfiguration, sklearnWrapper, experimentDBColumns, processor);
 	}
 
-	protected void executeFinalPipeline(final ExperimentConfiguration experimentConfiguration, final ScikitLearnWrapper<IPrediction, IPredictionBatch> sklearnWrapper,
+	protected void executeFinalPipeline(final ExperimentConfiguration experimentConfiguration, final ScikitLearnTimeSeriesRegressionWrapper<IPrediction, IPredictionBatch> sklearnWrapper,
 			final Map<String, Object> experimentDBColumns, final IExperimentIntermediateResultProcessor processor)
 			throws IOException, TrainingException, InterruptedException, ExperimentEvaluationFailedException {
 		if (sklearnWrapper != null) {
