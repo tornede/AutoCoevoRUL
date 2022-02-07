@@ -1,6 +1,7 @@
 {
     "repository": "RUL",
     "include": [
+        "attributes/index.json",
         "timeseries/index.json",
         "regression/index.json"
     ],

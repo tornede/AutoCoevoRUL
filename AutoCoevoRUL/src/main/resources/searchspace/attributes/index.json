@@ -1,0 +1,8 @@
+{
+  "repository": "ml4pdm.attributes",
+  "include": [
+    "./attribute_types.json",
+    "./attribute_filter.json"
+  ],
+  "components": []
+}

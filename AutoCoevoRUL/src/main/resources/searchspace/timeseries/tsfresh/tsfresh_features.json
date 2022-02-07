@@ -1,0 +1,21 @@
+{
+  "repository": "ml4pdm.transformation",
+  "components": [
+    {
+      "name": "ml4pdm.transformation.TsfreshFeature.MINIMUM",
+      "providedInterface": [
+        "TsfreshFeature"
+      ],
+      "requiredInterface": [],
+      "parameters": []
+    },
+    {
+      "name": "ml4pdm.transformation.TsfreshFeature.MAXIMUM",
+      "providedInterface": [
+        "TsfreshFeature"
+      ],
+      "requiredInterface": [],
+      "parameters": []
+    }
+  ]
+}

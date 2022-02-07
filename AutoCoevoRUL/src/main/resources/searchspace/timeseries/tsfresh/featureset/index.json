@@ -1,5 +1,0 @@
-{
-    "repository" : "timeseries.tsfresh.featureset-index",
-    "include" : [ "./FCParametersDictionary.json" ],
-    "components" : [ ]
-  }

@@ -1,0 +1,13 @@
+{
+    "repository": "ml4pdm",
+    "include": [],
+    "components": [
+        {
+            "name": "None",
+            "providedInterface": [
+            ],
+            "requiredInterface": [],
+            "parameters": []
+        }
+    ]
+}

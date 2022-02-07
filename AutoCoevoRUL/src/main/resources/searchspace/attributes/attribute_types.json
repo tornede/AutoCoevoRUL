@@ -1,0 +1,39 @@
+{
+    "repository": "ml4pdm.attributes",
+    "include": [],
+    "components": [
+        {
+            "name": "ml4pdm.data._attributes.CATEGORICAL",
+            "providedInterface": [
+                "AttributeType"
+            ],
+            "requiredInterface": [],
+            "parameters": []
+        },{
+            "name": "ml4pdm.data._attributes.NUMERIC",
+            "providedInterface": [
+                "AttributeType",
+                "AttributeType_Timeseries_Timestep",
+                "AttributeType_Timeseries_Value"
+            ],
+            "requiredInterface": [],
+            "parameters": []
+        },{
+            "name": "ml4pdm.data._attributes.TIMESERIES",
+            "providedInterface": [
+                "AttributeType"
+            ],
+            "requiredInterface": [
+                {
+                    "id": "timestep_type",
+                    "name": "AttributeType_Timeseries_Timestep"
+                },
+                {
+                    "id": "value_type",
+                    "name": "AttributeType_Timeseries_Value"
+                }
+            ],
+            "parameters": []
+        }
+    ]
+}

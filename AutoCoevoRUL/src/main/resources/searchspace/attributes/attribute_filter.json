@@ -1,0 +1,39 @@
+{
+    "repository": "ml4pdm.attributes",
+    "include": [],
+    "components": [
+        {
+            "name": "ml4pdm.attributes.AttributeFilter",
+            "providedInterface": [
+                "AttributeFilter"
+            ],
+            "requiredInterface": [
+                {
+                    "id": "attribute_names",
+                    "name": "AttributeName",
+                    "min": 0,
+                    "max": "{$numberOfAttributes}",
+                    "unique": "true"
+                },
+                {
+                    "id": "attribute_types",
+                    "name": "AttributeType",
+                    "min": 0,
+                    "max": 2,
+                    "unique": "true"
+                }
+            ],
+            "parameters": [
+                {
+                    "name": "min_unique_values_required",
+                    "type": "int",
+                    "default": 1,
+                    "min": 2,
+                    "max": 100,
+                    "minInterval": 1,
+                    "refineSplits": 8
+                }
+            ]
+        }
+    ]
+}

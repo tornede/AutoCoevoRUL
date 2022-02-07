@@ -1,0 +1,8 @@
+{
+  "repository": "timeseries.tsfresh",
+  "include": [
+    "./tsfresh.json",
+    "./tsfresh_features.json"
+  ],
+  "components": []
+}

@@ -1,21 +1,22 @@
 {
-    "repository": "timeseries.tsfresh",
-    "include": [
-      "./featureset/index.json"
-    ],
-    "components": [
-      {
-        "name": "python_connection.feature_generation.tsfresh_feature_generator.TsFreshBasedFeatureExtractor",
-        "providedInterface": [
-          "TimeSeriesFeatureGenerator"
-        ],
-        "requiredInterface": [
-          {
-            "id": "default_fc_parameters",
-            "name": "tsfreshFeatureSet"
-          }
-        ],
-        "parameters": []
-      }
-    ]
-  }
+  "repository": "ml4pdm.transformation",
+  "include": [],
+  "components": [
+    {
+      "name": "ml4pdm.transformation.TSFreshWrapper",
+      "providedInterface": [
+        "TimeseriesToTabularFeatureEngineering"
+      ],
+      "requiredInterface": [
+        {
+          "id": "tsfresh_features",
+          "name": "TsfreshFeature",
+          "min": 1,
+          "max": 2,
+          "unique": "true"
+        }
+      ],
+      "parameters": []
+    }
+  ]
+}
