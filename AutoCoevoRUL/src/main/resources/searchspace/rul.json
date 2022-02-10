@@ -1,7 +1,6 @@
 {
     "repository": "RUL",
     "include": [
-        "attributes/index.json",
         "timeseries/index.json",
         "regression/index.json"
     ],
@@ -16,10 +15,13 @@
                 {
                     "id": "regressor",
                     "name": "BasicRegressor"
+                },{
+                    "id": "attribute_filter",
+                    "name": "AttributeFilter"
                 },
                 {
                     "id": "timeseries_feature_generator",
-                    "name": "TimeSeriesFeatureGenerator",
+                    "name": "TimeseriesToTabularFeatureEngineering",
                     "min": 1,
                     "max": 2,
                     "unique": "true"

@@ -1,5 +1,0 @@
-{
-    "repository" : "timeseries.pyts.transformation-index",
-    "include" : [ "./last_value_masking_strategy.json", "./random_value_masking_strategy.json", "./zero_masking_strategy.json" ],
-    "components" : [ ]
-  }

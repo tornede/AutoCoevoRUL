@@ -12,6 +12,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import ai.libs.jaicore.components.api.IComponent;
 import ai.libs.jaicore.components.api.IComponentRepository;
 import ai.libs.jaicore.components.serialization.ComponentSerialization;
 
@@ -26,39 +27,34 @@ public class ScikitLearnSearchSpaceDeserializationTest {
 		templateVars.put("instance_lengt", "10");
 		File file = new File(path);
 		IComponentRepository repo = new ComponentSerialization().deserializeRepository(file, templateVars);
+		for (IComponent component : repo) {
+			System.out.println(component);
+		}
 		assertEquals(numExpectedComponents, repo.size(),
 				String.format("Number of components deserialized from path %s is %s instead of the expected number %s ", path, repo.size(), numExpectedComponents));
 	}
 
 	public static Stream<Arguments> provideRepositoriesToTest() {
 		return Stream.of(
-				/* pyts */
-				Arguments.of(BASE_PATH + "timeseries/pyts/transformation/BagOfPatterns.json", 1), //
-				Arguments.of(BASE_PATH + "timeseries/pyts/transformation/Boss.json", 1), //
-				Arguments.of(BASE_PATH + "timeseries/pyts/transformation/Rocket.json", 1), //
-				Arguments.of(BASE_PATH + "timeseries/pyts/transformation/ShapeletTransform.json", 1), //
-				Arguments.of(BASE_PATH + "timeseries/pyts/transformation/Weasel.json", 1), //
-				Arguments.of(BASE_PATH + "timeseries/pyts/transformation/UltraFastShapelets.json", 1), //
-				Arguments.of(BASE_PATH + "timeseries/pyts/transformation/index.json", 2), //
-
-				/* Masking Strategies */
-				Arguments.of(BASE_PATH + "timeseries/pyts/masking/index.json", 3), //
-				Arguments.of(BASE_PATH + "timeseries/pyts/pyts.json", 6), //
-		
+				/* attribute filter */
+				Arguments.of(BASE_PATH + "timeseries/attributes/attribute_filter.json", 1), //
+				Arguments.of(BASE_PATH + "timeseries/attributes/attribute_types.json", 3), //
+				Arguments.of(BASE_PATH + "timeseries/attributes/index.json", 4), //
+				
 				/* tsfresh */
-				Arguments.of(BASE_PATH + "timeseries/tsfresh/featureset/FCParametersDictionary.json", 1), //
-				Arguments.of(BASE_PATH + "timeseries/tsfresh/tsfresh.json", 2), //
+				Arguments.of(BASE_PATH + "timeseries/tsfresh/tsfresh_features.json", 2), //
+				Arguments.of(BASE_PATH + "timeseries/tsfresh/tsfresh.json", 1), //
+				Arguments.of(BASE_PATH + "timeseries/tsfresh/index.json", 3), // 
 
-				/* all ts feature elements*/
-
-				Arguments.of(BASE_PATH + "timeseries/index.json", 8), //
+				/* all timeseries feature elements */
+				Arguments.of(BASE_PATH + "timeseries/index.json", 7), //
 
 				/* Regressors */
 				Arguments.of(BASE_PATH + "regression/mlpregressor.json", 1), //
 				Arguments.of(BASE_PATH + "regression/index.json", 8), //
 
 				/* RUL */
-				Arguments.of(BASE_PATH + "rul.json", 17) //
+				Arguments.of(BASE_PATH + "rul.json", 16) //
 		);
 	}
 
