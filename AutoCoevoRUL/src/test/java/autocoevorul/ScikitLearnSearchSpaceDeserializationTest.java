@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -15,8 +16,13 @@ import org.junit.jupiter.params.provider.MethodSource;
 import ai.libs.jaicore.components.api.IComponent;
 import ai.libs.jaicore.components.api.IComponentRepository;
 import ai.libs.jaicore.components.serialization.ComponentSerialization;
+import autocoevorul.featurerextraction.genomehandler.BinaryAttributeSelectionIncludedGenomeHandler;
 
-public class ScikitLearnSearchSpaceDeserializationTest {
+public class ScikitLearnSearchSpaceDeserializationTest extends AbstractTest {
+
+	public ScikitLearnSearchSpaceDeserializationTest() throws NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		super(BinaryAttributeSelectionIncludedGenomeHandler.class);
+	}
 
 	private static final String BASE_PATH = "src/main/resources/searchspace/";
 

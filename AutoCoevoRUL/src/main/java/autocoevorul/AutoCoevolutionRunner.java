@@ -2,9 +2,7 @@ package autocoevorul;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
@@ -18,7 +16,6 @@ import org.api4.java.ai.ml.core.exception.TrainingException;
 import org.api4.java.algorithm.exceptions.AlgorithmTimeoutedException;
 import org.moeaframework.Executor;
 import org.moeaframework.core.PRNG;
-import org.moeaframework.core.Solution;
 import org.moeaframework.core.operator.InjectedInitialization;
 
 import com.google.common.eventbus.EventBus;
@@ -39,8 +36,8 @@ import autocoevorul.experiment.ExperimentConfiguration;
 import autocoevorul.experiment.ICoevolutionConfig;
 import autocoevorul.featurerextraction.CustomAlgorithmFactory;
 import autocoevorul.featurerextraction.FeatureExtractionMoeaProblem;
-import autocoevorul.featurerextraction.GenomeHandler;
-import autocoevorul.featurerextraction.SolutionUtil;
+import autocoevorul.featurerextraction.genomehandler.BinaryAttributeSelectionIncludedGenomeHandler;
+import autocoevorul.featurerextraction.genomehandler.GenomeHandler;
 import autocoevorul.util.DataUtil;
 
 public class AutoCoevolutionRunner extends AbstractRunner {
@@ -54,13 +51,19 @@ public class AutoCoevolutionRunner extends AbstractRunner {
 	public String getDatabaseConfigurationFilePath() {
 		return "conf/experiments/coevolution.properties";
 	}
+	
+	public GenomeHandler getGenomeHandler(ExperimentConfiguration experimentConfiguration) throws IOException, ComponentNotFoundException, ExperimentEvaluationFailedException {
+//		return new GenomeHandlerV1(experimentConfiguration);
+		return new BinaryAttributeSelectionIncludedGenomeHandler(experimentConfiguration);
+	}
+	
 
 	public static void main(final String[] args) throws ExperimentEvaluationFailedException, IOException, ComponentNotFoundException, ClassNotFoundException, InterruptedException,
 			SplitFailedException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
 		String executor = args[0];
 		boolean setupDatabase = Boolean.parseBoolean(args[1]);
 		boolean executeExperiments = Boolean.parseBoolean(args[2]);
-
+		
 		new AutoCoevolutionRunner().run(executor, setupDatabase, executeExperiments);
 	}
 
@@ -85,12 +88,12 @@ public class AutoCoevolutionRunner extends AbstractRunner {
 
 				IDatasetSplitSet<ILabeledDataset<?>> datasetSplitSet = DataUtil.prepareDatasetSplits(experimentConfiguration, random);
 
-				GenomeHandler genomeHandler = new GenomeHandler(experimentConfiguration);
+				GenomeHandler genomeHandler = getGenomeHandler(experimentConfiguration);
 				FeatureExtractionMoeaProblem problem = new FeatureExtractionMoeaProblem(eventBus, experimentConfiguration, genomeHandler, datasetSplitSet);
 				Executor moeaExecutor = new Executor().withAlgorithm("NSGAII").withProblem(problem).withProperty("operator", "sbx+hux+pm+bf")
 						.withProperty("populationSize", experimentConfiguration.getFeaturePopulationSize()).withMaxTime(experimentConfiguration.getTotalTimeout().milliseconds())
 						.usingAlgorithmFactory(new CustomAlgorithmFactory(new InjectedInitialization(problem, experimentConfiguration.getFeaturePopulationSize(),
-								this.getInitialSolutions(problem, genomeHandler, experimentConfiguration.getFeaturePopulationSize()))));
+								genomeHandler.getInitialSolutions(problem, experimentConfiguration.getFeaturePopulationSize()))));
 
 				try {
 					TimedComputation.compute(() -> moeaExecutor.run(), experimentConfiguration.getTotalTimeout(), "Total timeout exceeded.");
@@ -120,52 +123,6 @@ public class AutoCoevolutionRunner extends AbstractRunner {
 			System.exit(1);
 		}
 
-	}
-
-	private List<Solution> getInitialSolutions(final FeatureExtractionMoeaProblem problem, final GenomeHandler genomeHandler, final int populationSize) throws ComponentNotFoundException {
-		List<Solution> startingPopulation = new ArrayList<>();
-
-		// tsfresh only
-		Solution solution = SolutionUtil.getEmptySolution(problem, genomeHandler);
-		SolutionUtil.activateTsFresh(solution, genomeHandler);
-		startingPopulation.add(solution);
-
-		// UltrafastShapelet only
-		solution = SolutionUtil.getEmptySolution(problem, genomeHandler);
-		SolutionUtil.activateUltraFastShapelet(solution, genomeHandler);
-		startingPopulation.add(solution);
-
-		// Rocket only
-		solution = SolutionUtil.getEmptySolution(problem, genomeHandler);
-		SolutionUtil.activateRocket(solution, genomeHandler);
-		startingPopulation.add(solution);
-
-		// tsfresh + UltrafastShapelet
-		solution = SolutionUtil.getEmptySolution(problem, genomeHandler);
-		SolutionUtil.activateTsFresh(solution, genomeHandler);
-		SolutionUtil.activateUltraFastShapelet(solution, genomeHandler);
-		startingPopulation.add(solution);
-
-		// tsfresh + Rocket
-		solution = SolutionUtil.getEmptySolution(problem, genomeHandler);
-		SolutionUtil.activateTsFresh(solution, genomeHandler);
-		SolutionUtil.activateRocket(solution, genomeHandler);
-		startingPopulation.add(solution);
-
-		// UltrafastShapelet + Rocket
-		solution = SolutionUtil.getEmptySolution(problem, genomeHandler);
-		SolutionUtil.activateUltraFastShapelet(solution, genomeHandler);
-		SolutionUtil.activateRocket(solution, genomeHandler);
-		startingPopulation.add(solution);
-
-		// tsfresh + UltrafastShapelet + Rocket
-		solution = SolutionUtil.getEmptySolution(problem, genomeHandler);
-		SolutionUtil.activateTsFresh(solution, genomeHandler);
-		SolutionUtil.activateUltraFastShapelet(solution, genomeHandler);
-		SolutionUtil.activateRocket(solution, genomeHandler);
-		startingPopulation.add(solution);
-
-		return startingPopulation;
 	}
 
 }

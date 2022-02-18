@@ -8,10 +8,10 @@ totalTimeout = 10:MINUTES
 rulSearchspace = searchspace/rul.json
 rulRulRootComponentName = sklearn.pipeline.make_pipeline
 
-featureSearchspace = searchspace/timeseries/index.json
-featureRequiredInterface = TimeSeriesFeatureGenerator
-featureMainComponentNames = python_connection.feature_generation.tsfresh_feature_generator.FCParametersDictionary, pyts.transformation.ROCKET, python_connection.feature_generation.ultra_fast_shapelets_feature_generator.UltraFastShapeletsFeatureExtractor
-featureMainComponentNamesWithoutActivationBit = python_connection.feature_generation.tsfresh_feature_generator.FCParametersDictionary
+featureSearchspace = searchspace/timeseries/timeseries_feature_extraction.json
+featureRequiredInterface = MLPipelineTimeseriesFeatureExtraction
+featureMainComponentNames = ml4pdm.transformation.TsfreshWrapper, ml4pdm.attributes.AttributeFilter
+featureMainComponentNamesWithoutActivationBit = ml4pdm.transformation.TsfreshWrapper
 featurePythonTemplatePath = ../python_connection/run.py
 featureCandidateTimeout = 5:MINUTES
 featurePopulationSize = 7

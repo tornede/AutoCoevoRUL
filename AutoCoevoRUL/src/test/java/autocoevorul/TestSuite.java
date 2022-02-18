@@ -5,7 +5,7 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 
-@Suite.SuiteClasses({ CoevolutionTest.class, MoeaExampleProblemTest.class, MoeaSolutionEncodingTest.class, TSFreshFeatureGenerationTest.class })
+@Suite.SuiteClasses({ BinaryAttributeSelectionIncludedGenomeHandlerTest.class, CoevolutionTest.class, ScikitLearnSearchSpaceDeserializationTest.class })
 public class TestSuite {
 
 }

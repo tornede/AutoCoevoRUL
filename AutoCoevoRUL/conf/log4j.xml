@@ -145,6 +145,10 @@
 		<appender-ref ref="consoleFileAppender" />
 	</logger>
 
+	<logger
+		name="autocoevorul.featurerextraction.GenomeHandler">
+		<level value="trace" />
+	</logger>
 
 	<logger name="ai.libs">
 		<level value="warn" />
@@ -157,13 +161,18 @@
 
 
 	<logger
+		name="ai.libs.python.PythonUtil">
+		<level value="debug" />
+	</logger>
+	
+	<logger
 		name="ai.libs.jaicore.components.serialization.ComponentSerialization">
 		<level value="warn" />
 	</logger>
 
 	<logger
 		name="ai.libs.jaicore.ml.scikitwrapper.DefaultProcessListener">
-		<level value="debug" />
+		<level value="trace" />
 	</logger>
 
 	<logger

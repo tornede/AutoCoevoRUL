@@ -1,38 +1,29 @@
 package autocoevorul.featurerextraction;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
 import org.moeaframework.core.Solution;
 
 import ai.libs.jaicore.components.api.IComponentInstance;
-import ai.libs.mlplan.sklearn.ScikitLearnClassifierFactory;
 
 public class SolutionDecoding {
 
 	private Solution solution;
-	private List<IComponentInstance> componentInstances;
+	private IComponentInstance componentInstance;
 	private String constructionInstruction;
 	private String imports;
 
-	public SolutionDecoding(final Solution solution, final List<IComponentInstance> componentInstances) {
+	public SolutionDecoding(final Solution solution, final IComponentInstance componentInstances) {
 		super();
 		this.solution = solution;
-		this.componentInstances = componentInstances;
+		this.componentInstance = componentInstances;
 
-		ScikitLearnClassifierFactory factory = new ScikitLearnClassifierFactory();
+		TimeseriesFeatureEngineeringScikitLearnFactory factory = new TimeseriesFeatureEngineeringScikitLearnFactory(); // TODO
+		
 		Set<String> importSet = new HashSet<>();
-		StringJoiner constructionStringJoiner = new StringJoiner(",");
-		for (IComponentInstance componentInstance : componentInstances) {
-			constructionStringJoiner.add(factory.extractSKLearnConstructInstruction(componentInstance, importSet));
-		}
-		this.constructionInstruction = constructionStringJoiner.toString();
-		if (componentInstances.size() > 1) {
-			this.constructionInstruction = "make_union(" + this.constructionInstruction + ")";
-		}
+		this.constructionInstruction = factory.extractSKLearnConstructInstruction(componentInstance, importSet);
 
 		StringBuilder importsStringBuilder = new StringBuilder();
 		for (String importString : importSet.stream().sorted().collect(Collectors.toList())) {
@@ -50,8 +41,8 @@ public class SolutionDecoding {
 		return this.solution;
 	}
 
-	public List<IComponentInstance> getComponentInstances() {
-		return this.componentInstances;
+	public IComponentInstance getComponentInstance() {
+		return this.componentInstance;
 	}
 
 	public String getConstructionInstruction() {

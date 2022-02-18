@@ -31,6 +31,7 @@ import ai.libs.jaicore.ml.scikitwrapper.ScikitLearnTimeSeriesFeatureEngineeringW
 import ai.libs.jaicore.timing.TimedComputation;
 import autocoevorul.event.UpdatingBestPipelineEvent;
 import autocoevorul.experiment.ExperimentConfiguration;
+import autocoevorul.featurerextraction.genomehandler.GenomeHandler;
 import autocoevorul.regression.RegressionGGPSolution;
 import autocoevorul.regression.RegressionGgpProblem;
 

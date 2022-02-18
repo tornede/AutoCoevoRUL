@@ -7,9 +7,9 @@ seed = 42
 numberOfFolds = 2
 
 featureSearchspace = searchspace/timeseries.json
-featureRequiredInterface = TimeSeriesFeatureGenerator
-featureMainComponentNames = python_connection.feature_generation.tsfresh_feature_generator.FCParametersDictionary, pyts.transformation.ROCKET, pyts.transformation.ShapeletTransform
-featureMainComponentNamesWithoutActivationBit = python_connection.feature_generation.tsfresh_feature_generator.FCParametersDictionary
+featureRequiredInterface = MLPipelineTimeseriesFeatureExtraction
+featureMainComponentNames = ml4pdm.transformation.fixed_size.TsfreshWrapper, ml4pdm.transformation.AttributeFilter
+featureMainComponentNamesWithoutActivationBit = ml4pdm.transformation.fixed_size.TsfreshWrapper
 featureCandidateTimeout = 10:MINUTES
 featurePopulationSize = 5
 featureNumberOfGenerations = 2

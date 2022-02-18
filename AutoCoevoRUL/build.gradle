@@ -13,9 +13,10 @@ repositories {
 
 dependencies {
 
-    implementation('com.github.starlibs:ailibs:mlplan-sklearn~bugfix-searchspace-and-factory-SNAPSHOT'){
+    //implementation('com.github.starlibs:ailibs:mlplan-sklearn~bugfix-searchspace-and-factory-SNAPSHOT'){
+    implementation('ai.libs:mlplan-sklearn'){
     	exclude group: 'mysql', module: 'mysql-connector-java'
-    	}
+    }
     implementation('com.github.mwever:moeaframework:e6f6b1a007')
     
     compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.25'

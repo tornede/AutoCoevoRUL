@@ -1,33 +1,39 @@
 package autocoevorul;
 
-import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Random;
 
 import org.api4.java.ai.ml.core.dataset.serialization.DatasetDeserializationFailedException;
-import org.moeaframework.core.Solution;
-import org.moeaframework.core.variable.BinaryIntegerVariable;
-import org.moeaframework.core.variable.BinaryVariable;
+import org.api4.java.ai.ml.core.dataset.splitter.SplitFailedException;
+import org.api4.java.ai.ml.core.dataset.supervised.ILabeledDataset;
+import org.api4.java.ai.ml.core.evaluation.execution.IDatasetSplitSet;
+import org.moeaframework.core.PRNG;
 import org.slf4j.Logger;
 
 import com.google.common.eventbus.EventBus;
 
-import ai.libs.jaicore.components.exceptions.ComponentNotFoundException;
+import ai.libs.jaicore.experiments.exceptions.ExperimentEvaluationFailedException;
 import autocoevorul.experiment.ExperimentConfiguration;
 import autocoevorul.featurerextraction.FeatureExtractionMoeaProblem;
-import autocoevorul.featurerextraction.GenomeHandler;
+import autocoevorul.featurerextraction.genomehandler.GenomeHandler;
+import autocoevorul.util.DataUtil;
 
-public class AbstractTest {
+public abstract class AbstractTest {
 
 	private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(AbstractTest.class);
 
 	private static final String CONFIG_FILE_PATH = "src/test/resources/searchspace/tests.cnf";
-	protected static final String PYTHON_TEMPLATE_PATH = "../python_connection/run.py";
+	protected static final String PYTHON_TEMPLATE_PATH = "src/main/resources/ml4pdm.py";
 
 	private ExperimentConfiguration experimentConfiguration;
+	protected GenomeHandler genomeHandler;
 
-	protected GenomeHandler setupGenomeHandler() throws IOException, ComponentNotFoundException {
-		return new GenomeHandler(this.getExperimentConfiguration());
+	public AbstractTest (final Class<? extends GenomeHandler> genomeHandlerClass) throws NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		Constructor<?> cons = genomeHandlerClass.getConstructor(ExperimentConfiguration.class);		
+		this.genomeHandler = (GenomeHandler) cons.newInstance(this.getExperimentConfiguration());;
 	}
-
+	
 	protected ExperimentConfiguration getExperimentConfiguration() {
 		if (this.experimentConfiguration == null) {
 			this.experimentConfiguration = new ExperimentConfiguration(CONFIG_FILE_PATH);
@@ -35,16 +41,18 @@ public class AbstractTest {
 		return this.experimentConfiguration;
 	}
 
-	protected Solution getEmptySolution(final ExperimentConfiguration experimentConfiguration, final GenomeHandler genomeHandler) throws DatasetDeserializationFailedException {
-		FeatureExtractionMoeaProblem problem = new FeatureExtractionMoeaProblem(new EventBus(), experimentConfiguration, genomeHandler, null);
-		Solution solution = problem.newSolution();
-		for (int i = 0; i < 65; i++) {
-			((BinaryIntegerVariable) solution.getVariable(i)).setValue(this.getPositionInArray("False", "True", "False"));
+	protected FeatureExtractionMoeaProblem getFeatureExtractionMoeaProblem()  {		
+		try {
+			ExperimentConfiguration experimentConfiguration = this.getExperimentConfiguration();
+			Random random = new Random(1);
+			PRNG.setSeed(experimentConfiguration.getSeed());
+			IDatasetSplitSet<ILabeledDataset<?>> datasetSplitSet;
+			datasetSplitSet = DataUtil.prepareDatasetSplits(experimentConfiguration, random);
+			return new FeatureExtractionMoeaProblem(new EventBus(), this.getExperimentConfiguration(), this.genomeHandler, datasetSplitSet);
+		} catch (DatasetDeserializationFailedException | IllegalAccessException | IllegalArgumentException | NoSuchFieldException | SecurityException
+				| ExperimentEvaluationFailedException | InterruptedException | SplitFailedException e) {
+			throw new RuntimeException();
 		}
-		((BinaryVariable) solution.getVariable(65)).set(0, false);
-		((BinaryVariable) solution.getVariable(66)).set(0, false);
-		((BinaryVariable) solution.getVariable(68)).set(0, false);
-		return solution;
 	}
 
 	protected int getPositionInArray(final Object value, final Object... array) {

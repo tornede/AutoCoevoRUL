@@ -8,3 +8,4 @@
  */
 
 rootProject.name = 'AutoCoevoRUL'
+includeBuild "../../../../MLPlan/AILibs"

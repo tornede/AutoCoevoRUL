@@ -1,0 +1,30 @@
+{
+    "repository": "TimeseriesFeatureExtraction",
+    "include": [
+        "./index.json"
+    ],
+    "components": [
+        {
+            "name": "sklearn.pipeline.make_pipeline",
+            "providedInterface": [
+                "MLPipelineTimeseriesFeatureExtraction"
+            ],
+            "requiredInterface": [
+                {
+                    "id": "attribute_filter",
+                    "name": "AttributeFilter",
+                    "min": 0,
+                    "max": 1
+                },
+                {
+                    "id": "timeseries_feature_generator",
+                    "name": "TimeseriesToTabularFeatureEngineering",
+                    "min": 1,
+                    "max": 2,
+                    "unique": "true"
+                }
+            ],
+            "parameters": []
+        }
+    ]
+}

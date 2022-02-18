@@ -114,7 +114,7 @@ public class RegressionGgpProblem {
 		String imports = featureTransformerConstructionInstructionAndImports.getY() + "\n" + regressorConstructionInstructionAndImports.getY();
 
 		RegressionGGPSolution regressionGGPSolution = new RegressionGGPSolution(constructionString, imports, this.getRegressionComponentInstanceFromGGPResult(),
-				this.getSolutionDecodingOfExtractorPresentInGGPResult().getComponentInstances(), this.ggpResult.getScore());
+				this.getSolutionDecodingOfExtractorPresentInGGPResult().getComponentInstance(), this.ggpResult.getScore());
 
 		this.eventBus.post(new GGPRegressionResultFoundEvent(regressionGGPSolution));
 

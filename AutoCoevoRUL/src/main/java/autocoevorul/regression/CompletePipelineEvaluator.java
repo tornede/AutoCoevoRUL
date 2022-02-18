@@ -177,7 +177,7 @@ public class CompletePipelineEvaluator implements IObjectEvaluator<IComponentIns
 			x.setAccessible(true);
 			
 			File tmpFolder = (File) x.invoke(f.get(learner));
-			return new File(tmpFolder + "/" + datasetName);
+			return new File(tmpFolder + "/" + datasetName + ".arff");
 			
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchFieldException | NoSuchMethodException | SecurityException e) {
 			throw new RuntimeException("Could not figure out correct file for training or test dataset: " + datasetName);

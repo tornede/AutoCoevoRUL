@@ -1,12 +1,12 @@
 package autocoevorul;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.StandardCharsets;
-import java.util.Comparator;
-import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -20,19 +20,21 @@ import org.api4.java.ai.ml.core.exception.TrainingException;
 import org.junit.Before;
 import org.junit.Test;
 import org.moeaframework.core.Solution;
-import org.moeaframework.core.variable.BinaryIntegerVariable;
 
 import com.google.common.hash.Hashing;
 
-import ai.libs.jaicore.components.api.IComponentInstance;
-import ai.libs.jaicore.components.api.IParameter;
 import ai.libs.jaicore.components.exceptions.ComponentNotFoundException;
 import ai.libs.jaicore.experiments.exceptions.ExperimentEvaluationFailedException;
-import ai.libs.jaicore.ml.scikitwrapper.ScikitLearnTimeSeriesFeatureEngineeringWrapper;
-import autocoevorul.featurerextraction.GenomeHandler;
 import autocoevorul.featurerextraction.SolutionDecoding;
+import autocoevorul.featurerextraction.TimeseriesFeatureEngineeringScikitLearnWrapper;
+import autocoevorul.featurerextraction.genomehandler.BinaryAttributeSelectionIncludedGenomeHandler;
 
-public class TSFreshFeatureGenerationTest extends AbstractTest {
+public class BinaryAttributeSelectionIncludedGenomeHandlerTest extends AbstractTest{
+	
+	public BinaryAttributeSelectionIncludedGenomeHandlerTest() throws NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		super(BinaryAttributeSelectionIncludedGenomeHandler.class);
+	}
+	
 
 	@Before
 	public void purgeTmpDirectory() throws IOException {
@@ -41,46 +43,38 @@ public class TSFreshFeatureGenerationTest extends AbstractTest {
 			FileUtils.deleteDirectory(tmpDirectory);
 		}
 	}
+	
+	@Test
+	public void testCorrectDefinedGenome() throws IOException, ComponentNotFoundException, ExperimentEvaluationFailedException {
+		assertEquals( 
+				2 // AttributeFilter + 3 params
+				+ 2 // Tsfresh
+				+ 24 // sensors
+				, this.genomeHandler.getNumberOfVariables());
+	}
+	
+	@Test
+	public void testInitialTsfreshSolutions() throws ComponentNotFoundException {
+		Solution tsfreshSolution = this.genomeHandler.activateTsfresh(this.genomeHandler.getEmptySolution(this.getFeatureExtractionMoeaProblem()));
+		assertNotNull(tsfreshSolution);
+		
+		SolutionDecoding solutionDecoding = this.genomeHandler.decodeGenome(tsfreshSolution);
+		assertNotNull(solutionDecoding);
+		assertEquals("make_pipeline(TsfreshWrapper(tsfresh_features=[TsfreshFeature.MAXIMUM,TsfreshFeature.MINIMUM]))", solutionDecoding.getConstructionInstruction());
+		assertEquals(3, solutionDecoding.getImports().split("\n").length);
+		assertEquals("from ml4pdm.transformation.fixed_size import TsfreshFeature\n"
+				+ "from ml4pdm.transformation.fixed_size import TsfreshWrapper\n"
+				+ "from sklearn.pipeline import make_pipeline\n", solutionDecoding.getImports());
+	}
+	
 
 	@Test
 	public void testCorrectAmountOfFeaturesGeneratedByTSFresh()
 			throws IOException, ComponentNotFoundException, DatasetDeserializationFailedException, TrainingException, PredictionException, InterruptedException, ExperimentEvaluationFailedException {
-		GenomeHandler genomeHandler = new GenomeHandler(this.getExperimentConfiguration());
-		Solution solution = this.getEmptySolution(this.getExperimentConfiguration(), genomeHandler);
+		Solution tsfreshSolution = this.genomeHandler.activateTsfresh(this.genomeHandler.getEmptySolution(this.getFeatureExtractionMoeaProblem()));
+		SolutionDecoding solutionDecoding = this.genomeHandler.decodeGenome(tsfreshSolution);
 
-		// set minimum = true
-		((BinaryIntegerVariable) solution.getVariable(0)).setValue(this.getPositionInArray("True", "True", "False"));
-
-		// set has_duplicate = true
-		((BinaryIntegerVariable) solution.getVariable(59)).setValue(this.getPositionInArray("True", "True", "False"));
-
-		SolutionDecoding solutionDecoding = genomeHandler.decodeGenome(solution);
-		List<IComponentInstance> componentInstances = solutionDecoding.getComponentInstances();
-		componentInstances.sort(new Comparator<IComponentInstance>() {
-			@Override
-			public int compare(final IComponentInstance c1, final IComponentInstance c2) {
-				return c1.getComponent().getName().compareTo(c2.getComponent().getName());
-			}
-		});
-
-		assertEquals(1, componentInstances.size());
-
-		IComponentInstance rootComponentInstance = componentInstances.get(0);
-		assertEquals("python_connection.feature_generation.tsfresh_feature_generator.TsFreshBasedFeatureExtractor", rootComponentInstance.getComponent().getName());
-
-		IComponentInstance dictionaryComponentInstance = rootComponentInstance.getSatisfactionOfRequiredInterface("default_fc_parameters").get(0);
-		assertEquals("python_connection.feature_generation.tsfresh_feature_generator.FCParametersDictionary", dictionaryComponentInstance.getComponent().getName());
-
-		for (IParameter parameter : dictionaryComponentInstance.getComponent().getParameters()) {
-			if (parameter.getName().equals("minimum") || parameter.getName().equals("has_duplicate")) {
-				assertEquals("True", dictionaryComponentInstance.getParameterValue(parameter.getName()));
-			} else {
-				assertEquals("False", dictionaryComponentInstance.getParameterValue(parameter.getName()));
-			}
-		}
-
-		System.out.println(solutionDecoding.getConstructionInstruction());
-		ScikitLearnTimeSeriesFeatureEngineeringWrapper<IPrediction, IPredictionBatch> sklearnWrapper = new ScikitLearnTimeSeriesFeatureEngineeringWrapper<>(solutionDecoding.getConstructionInstruction(), solutionDecoding.getImports());
+		TimeseriesFeatureEngineeringScikitLearnWrapper<IPrediction, IPredictionBatch> sklearnWrapper = new TimeseriesFeatureEngineeringScikitLearnWrapper<>(solutionDecoding.getConstructionInstruction(), solutionDecoding.getImports());
 		sklearnWrapper.setPythonTemplate(PYTHON_TEMPLATE_PATH);
 		sklearnWrapper.setTimeout(this.getExperimentConfiguration().getFeatureCandidateTimeoutPerFold());
 		sklearnWrapper.setSeed(1234);
@@ -100,4 +94,5 @@ public class TSFreshFeatureGenerationTest extends AbstractTest {
 		String hashCode = Hashing.sha256().hashString(StringUtils.join(solutionDecoding.getConstructionInstruction(), solutionDecoding.getImports()), StandardCharsets.UTF_8).toString();
 		return hashCode.startsWith("-") ? hashCode.replace("-", "1") : "0" + hashCode;
 	}
+	
 }
