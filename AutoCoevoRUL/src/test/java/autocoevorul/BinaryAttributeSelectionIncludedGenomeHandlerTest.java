@@ -47,9 +47,9 @@ public class BinaryAttributeSelectionIncludedGenomeHandlerTest extends AbstractT
 	@Test
 	public void testCorrectGenomeSize() throws IOException, ComponentNotFoundException, ExperimentEvaluationFailedException {
 		assertEquals( 
-				2 // AttributeFilter + 3 params
+				24 // sensors
+				+ 2 // AttributeFilter + 3 params
 				+ 2 // Tsfresh
-				+ 24 // sensors
 				, this.genomeHandler.getNumberOfVariables());
 	}
 	
