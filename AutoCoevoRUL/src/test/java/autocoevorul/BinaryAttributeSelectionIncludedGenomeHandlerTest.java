@@ -45,7 +45,7 @@ public class BinaryAttributeSelectionIncludedGenomeHandlerTest extends AbstractT
 	}
 	
 	@Test
-	public void testCorrectDefinedGenome() throws IOException, ComponentNotFoundException, ExperimentEvaluationFailedException {
+	public void testCorrectGenomeSize() throws IOException, ComponentNotFoundException, ExperimentEvaluationFailedException {
 		assertEquals( 
 				2 // AttributeFilter + 3 params
 				+ 2 // Tsfresh
