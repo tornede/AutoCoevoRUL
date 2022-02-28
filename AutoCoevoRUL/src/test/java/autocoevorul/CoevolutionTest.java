@@ -24,11 +24,10 @@ import autocoevorul.regression.RegressionGgpProblem;
 import autocoevorul.util.DataUtil;
 
 public class CoevolutionTest extends AbstractTest {
-	
+
 	public CoevolutionTest() throws NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		super(BinaryAttributeSelectionIncludedGenomeHandler.class);
 	}
-
 
 	@Test
 	@Ignore

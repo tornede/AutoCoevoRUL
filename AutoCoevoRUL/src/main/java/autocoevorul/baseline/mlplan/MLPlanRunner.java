@@ -51,8 +51,8 @@ public class MLPlanRunner extends AbstractRunner {
 		return "conf/experiments/mlPlan.properties";
 	}
 
-	public static void main(final String[] args) throws ExperimentEvaluationFailedException, IOException, ComponentNotFoundException, ClassNotFoundException, InterruptedException,
-			SplitFailedException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+	public static void main(final String[] args) throws ExperimentEvaluationFailedException, IOException, ComponentNotFoundException, ClassNotFoundException, InterruptedException, SplitFailedException, NoSuchFieldException,
+			SecurityException, IllegalArgumentException, IllegalAccessException {
 		String executor = args[0];
 		boolean setupDatabase = Boolean.parseBoolean(args[1]);
 		boolean executeExperiments = Boolean.parseBoolean(args[2]);
@@ -77,10 +77,9 @@ public class MLPlanRunner extends AbstractRunner {
 				builder.withSearchSpaceConfigFile(new ResourceFile(experimentConfiguration.getRulSearchSpace()));
 				builder.withPreferredNodeEvaluator(new TasksAlreadyResolvedPathEvaluator(Arrays.asList("AbstractRegressor", "BasicRegressor")));
 
-				((MonteCarloCrossValidationEvaluatorFactory) builder.getLearnerEvaluationFactoryForSearchPhase()).withMeasure(experimentConfiguration.getPerformanceMeasure())
-						.withNumMCIterations(experimentConfiguration.getNumberOfFolds()).withCacheSplitSets(true);
-				((MonteCarloCrossValidationEvaluatorFactory) builder.getLearnerEvaluationFactoryForSelectionPhase()).withMeasure(experimentConfiguration.getPerformanceMeasure())
-						.withNumMCIterations(5);
+				((MonteCarloCrossValidationEvaluatorFactory) builder.getLearnerEvaluationFactoryForSearchPhase()).withMeasure(experimentConfiguration.getPerformanceMeasure()).withNumMCIterations(experimentConfiguration.getNumberOfFolds())
+						.withCacheSplitSets(true);
+				((MonteCarloCrossValidationEvaluatorFactory) builder.getLearnerEvaluationFactoryForSelectionPhase()).withMeasure(experimentConfiguration.getPerformanceMeasure()).withNumMCIterations(5);
 
 				builder.withTimeOut(experimentConfiguration.getTotalTimeout());
 				builder.withNodeEvaluationTimeOut(new Timeout(experimentConfiguration.getRulTimeout().seconds() * 3, TimeUnit.SECONDS));

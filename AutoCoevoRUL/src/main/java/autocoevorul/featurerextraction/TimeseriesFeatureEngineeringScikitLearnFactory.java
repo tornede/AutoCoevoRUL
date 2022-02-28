@@ -23,21 +23,21 @@ public class TimeseriesFeatureEngineeringScikitLearnFactory extends AScikitLearn
 		for (IComponentInstance timeseriesFeatureGenerator : groundComponent.getSatisfactionOfRequiredInterface("attribute_filter")) {
 			sb.add(this.extractSKLearnConstructInstruction(timeseriesFeatureGenerator, importSet));
 		}
-		for (IComponentInstance componentInstances : groundComponent.getSatisfactionOfRequiredInterface("timeseries_feature_generator").stream().sorted((o1, o2) -> o1.getComponent().getName().compareTo(o2.getComponent().getName())).collect(Collectors.toList())) {
-			sb.add( this.getPipelineBuildStringForTimeseriesFeatureExtraction(componentInstances, importSet));
+		for (IComponentInstance componentInstances : groundComponent.getSatisfactionOfRequiredInterface("timeseries_feature_generator").stream().sorted((o1, o2) -> o1.getComponent().getName().compareTo(o2.getComponent().getName()))
+				.collect(Collectors.toList())) {
+			sb.add(this.getPipelineBuildStringForTimeseriesFeatureExtraction(componentInstances, importSet));
 		}
 		return sb.toString();
 	}
-	
-	
+
 	private String getPipelineBuildStringForTimeseriesFeatureExtraction(final IComponentInstance componentInstances, final Set<String> importSet) {
 		StringBuilder sb = new StringBuilder();
 		if (componentInstances.getComponent().getName().endsWith("TsfreshWrapper")) {
-			extractImport(componentInstances, importSet);
+			this.extractImport(componentInstances, importSet);
 			StringJoiner sj = new StringJoiner(",");
 			for (IComponentInstance satisfyingComponentInstance : componentInstances.getSatisfactionOfRequiredInterface("tsfresh_features").stream().sorted((o1, o2) -> o1.getComponent().getName().compareTo(o2.getComponent().getName()))
 					.collect(Collectors.toList())) {
-				extractImport(satisfyingComponentInstance, importSet, 2);
+				this.extractImport(satisfyingComponentInstance, importSet, 2);
 				String[] packagePathSplit = satisfyingComponentInstance.getComponent().getName().split("\\.");
 				String tsfreshFeature = packagePathSplit[packagePathSplit.length - 2] + "." + packagePathSplit[packagePathSplit.length - 1];
 				sj.add(tsfreshFeature);
@@ -48,14 +48,14 @@ public class TimeseriesFeatureEngineeringScikitLearnFactory extends AScikitLearn
 		} else {
 			sb.append(this.extractSKLearnConstructInstruction(componentInstances, importSet));
 		}
-		
+
 		return sb.toString();
 	}
-	
+
 	private void extractImport(final IComponentInstance componentInstances, final Set<String> importSet) {
 		this.extractImport(componentInstances, importSet, 1);
 	}
-	
+
 	private void extractImport(final IComponentInstance componentInstances, final Set<String> importSet, final int classNameindex) {
 		String[] packagePathSplit = componentInstances.getComponent().getName().split("\\.");
 		StringBuilder fromSB = new StringBuilder();
@@ -69,9 +69,6 @@ public class TimeseriesFeatureEngineeringScikitLearnFactory extends AScikitLearn
 			importSet.add("from " + fromSB.toString() + " import " + className + "\n");
 		}
 	}
-	
-	
-
 
 	@Override
 	public TimeseriesFeatureEngineeringScikitLearnWrapper<IPrediction, IPredictionBatch> getScikitLearnWrapper(final String constructionString, final String imports) throws IOException, InterruptedException {

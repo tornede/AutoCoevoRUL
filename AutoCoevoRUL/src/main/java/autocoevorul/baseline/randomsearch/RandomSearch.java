@@ -60,11 +60,10 @@ public class RandomSearch {
 		ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(this.experimentConfiguration.getNumCPUs());
 		while ((System.currentTimeMillis() - start) < this.experimentConfiguration.getTotalTimeout().milliseconds()) {
 			if (executor.getQueue().size() < this.experimentConfiguration.getNumCPUs()) {
-				IComponentInstance randomComponentInstance = ComponentUtil.getRandomInstantiationOfComponent(this.experimentConfiguration.getRulRootComponentName(),
-						new ComponentRepository(this.allComponents), this.random);
+				IComponentInstance randomComponentInstance = ComponentUtil.getRandomInstantiationOfComponent(this.experimentConfiguration.getRulRootComponentName(), new ComponentRepository(this.allComponents), this.random);
 
-				RulCompletePipelineEvaluator evaluator = new RulCompletePipelineEvaluator(this.eventBus, this.experimentConfiguration, this.datasetSplitSet,
-						this.experimentConfiguration.getRulTimeout(), randomComponentInstance, this.bestPipeline);
+				RulCompletePipelineEvaluator evaluator = new RulCompletePipelineEvaluator(this.eventBus, this.experimentConfiguration, this.datasetSplitSet, this.experimentConfiguration.getRulTimeout(), randomComponentInstance,
+						this.bestPipeline);
 				executor.execute(evaluator);
 			}
 		}

@@ -15,8 +15,8 @@ public class RegressorEvaluatedEvent extends AbstractEvent {
 	private List<Long> runtimes;
 	private String generation;
 
-	public RegressorEvaluatedEvent(final String regressorConstructionString, final String featureExtractorConstructionString, final String datasetName, final double performance,
-			final String exception, final List<Long> runtimes, final String generation) {
+	public RegressorEvaluatedEvent(final String regressorConstructionString, final String featureExtractorConstructionString, final String datasetName, final double performance, final String exception, final List<Long> runtimes,
+			final String generation) {
 		super();
 		this.regressorConstructionString = regressorConstructionString;
 		this.featureExtractorConstructionString = featureExtractorConstructionString;
@@ -27,13 +27,11 @@ public class RegressorEvaluatedEvent extends AbstractEvent {
 		this.generation = generation;
 	}
 
-	public RegressorEvaluatedEvent(final String regressorConstructionString, final String featureExtractorConstructionString, final String datasetName, final double score, final List<Long> runtimes,
-			final String generation) {
+	public RegressorEvaluatedEvent(final String regressorConstructionString, final String featureExtractorConstructionString, final String datasetName, final double score, final List<Long> runtimes, final String generation) {
 		this(regressorConstructionString, featureExtractorConstructionString, datasetName, score, null, runtimes, generation);
 	}
 
-	public RegressorEvaluatedEvent(final String regressorConstructionString, final String featureExtractorConstructionString, final String datasetName, final String exception,
-			final String generation) {
+	public RegressorEvaluatedEvent(final String regressorConstructionString, final String featureExtractorConstructionString, final String datasetName, final String exception, final String generation) {
 		this(regressorConstructionString, featureExtractorConstructionString, datasetName, -1, exception, new ArrayList<>(), generation);
 	}
 

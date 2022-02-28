@@ -49,27 +49,25 @@ public abstract class GenomeHandler {
 
 	protected GenomeHandler(final ExperimentConfiguration experimentConfiguration) throws IOException, ComponentNotFoundException, ExperimentEvaluationFailedException {
 		this.allComponents = ComponentCollectionUtil.getAllComponents(experimentConfiguration.getFeatureSearchspace(), experimentConfiguration.getTemplateVariables());
-		setupAdditionalComponents(experimentConfiguration);
-		this.rootComponent = ComponentCollectionUtil.getComponentsSatisfyingInterface(experimentConfiguration.getFeatureSearchspace(), experimentConfiguration.getFeatureRequiredInterface(),
-				experimentConfiguration.getTemplateVariables()).get(0);
+		this.setupAdditionalComponents(experimentConfiguration);
+		this.rootComponent = ComponentCollectionUtil.getComponentsSatisfyingInterface(experimentConfiguration.getFeatureSearchspace(), experimentConfiguration.getFeatureRequiredInterface(), experimentConfiguration.getTemplateVariables())
+				.get(0);
 
-		this.mainComponents = allComponents.stream().filter(c -> experimentConfiguration.getFeatureMainComponentNames().contains(c.getName()))
-				.sorted((c1, c2) -> c1.getName().compareTo(c2.getName())).collect(Collectors.toList());
-		this.mainComponentNamesWithoutActivationBit = experimentConfiguration.getFeatureMainComponentNamesWithoutActivationBit();	
+		this.mainComponents = this.allComponents.stream().filter(c -> experimentConfiguration.getFeatureMainComponentNames().contains(c.getName())).sorted((c1, c2) -> c1.getName().compareTo(c2.getName())).collect(Collectors.toList());
+		this.mainComponentNamesWithoutActivationBit = experimentConfiguration.getFeatureMainComponentNamesWithoutActivationBit();
 
 		this.mainComponentEntries = new ArrayList<>();
 		this.indexToComponentEntryMap = new HashMap<>();
 		this.providedInterfaceToListOfComponentEntryMap = new HashMap<>();
 		this.variableTypes = new ArrayList<>();
-		
+
 		for (IComponent component : this.allComponents.stream().sorted((c1, c2) -> c1.getName().compareTo(c2.getName())).collect(Collectors.toList())) {
 			this.setupComponentToGenomeRepresentation(component);
 		}
 	}
-	
+
 	protected abstract void setupAdditionalComponents(final ExperimentConfiguration experimentConfiguration) throws ExperimentEvaluationFailedException;
-	
-	
+
 	private void setupComponentToGenomeRepresentation(final IComponent component) throws ComponentNotFoundException {
 		GenomeComponentEntry componentEntry;
 		if (this.needsActivationBit(component)) {
@@ -114,7 +112,6 @@ public abstract class GenomeHandler {
 		return false;
 	}
 
-
 	public int getNumberOfVariables() {
 		return this.amountOfFeatures;
 	}
@@ -132,9 +129,9 @@ public abstract class GenomeHandler {
 
 	public SolutionDecoding decodeGenome(final Solution solution) throws ComponentNotFoundException {
 		this.printGenome(solution);
-		
+
 		Map<String, List<IComponentInstance>> satisfactionOfRequiredInterfaces = new HashMap<>();
-		for (IRequiredInterfaceDefinition requiredInterface : rootComponent.getRequiredInterfaces() ) {
+		for (IRequiredInterfaceDefinition requiredInterface : this.rootComponent.getRequiredInterfaces()) {
 			satisfactionOfRequiredInterfaces.put(requiredInterface.getId(), new ArrayList<>());
 			for (GenomeComponentEntry requiredInterfaceGenomeComponentEntry : this.providedInterfaceToListOfComponentEntryMap.get(requiredInterface.getName())) {
 				IComponentInstance requiredInterfaceComponentInstance = this.decodeComponent(requiredInterfaceGenomeComponentEntry, solution);
@@ -144,12 +141,12 @@ public abstract class GenomeHandler {
 			}
 		}
 
-		ComponentInstance componentInstance = new ComponentInstance(rootComponent, Collections.emptyMap(), satisfactionOfRequiredInterfaces);
+		ComponentInstance componentInstance = new ComponentInstance(this.rootComponent, Collections.emptyMap(), satisfactionOfRequiredInterfaces);
 		if (this.isCompletelyDefined(componentInstance)) {
 			LOGGER.debug("ComponentInstances found: {}", componentInstance);
 			return new SolutionDecoding(solution, componentInstance);
 		}
-		
+
 		return null;
 	}
 
@@ -164,9 +161,9 @@ public abstract class GenomeHandler {
 				String parameterValue = this.interpreteParameterVariable(solution, genomeComponentEntry, parameterIndex);
 				parameterValues.put(parameter.getName(), parameterValue);
 			}
-			
+
 			Map<String, List<IComponentInstance>> satisfactionOfRequiredInterfaces = new HashMap<>();
-			for (IRequiredInterfaceDefinition requiredInterface : component.getRequiredInterfaces() ) {
+			for (IRequiredInterfaceDefinition requiredInterface : component.getRequiredInterfaces()) {
 				satisfactionOfRequiredInterfaces.put(requiredInterface.getId(), new ArrayList<>());
 				for (GenomeComponentEntry requiredInterfaceGenomeComponentEntry : this.providedInterfaceToListOfComponentEntryMap.get(requiredInterface.getName())) {
 					IComponentInstance requiredInterfaceComponentInstance = this.decodeComponent(requiredInterfaceGenomeComponentEntry, solution);
@@ -185,14 +182,13 @@ public abstract class GenomeHandler {
 		return null;
 	}
 
-
 	private boolean isCompletelyDefined(final IComponentInstance componentInstance) {
 		if (componentInstance.getParameterValues().size() != componentInstance.getComponent().getParameters().size()) {
 			return false;
 		}
 
 		for (IRequiredInterfaceDefinition requiredInterface : componentInstance.getComponent().getRequiredInterfaces()) {
-			if (requiredInterface.getMin() < componentInstance.getSatisfactionOfRequiredInterfaces().get(requiredInterface.getId()).size() 
+			if (requiredInterface.getMin() < componentInstance.getSatisfactionOfRequiredInterfaces().get(requiredInterface.getId()).size()
 					&& componentInstance.getSatisfactionOfRequiredInterfaces().get(requiredInterface.getId()).size() < requiredInterface.getMax()) {
 				return false;
 			}
@@ -210,8 +206,7 @@ public abstract class GenomeHandler {
 		}).map(e -> e.getValue()).distinct().collect(Collectors.toList());
 		for (GenomeComponentEntry genomeComponentEntry : sortedGenomeComponentEntries) {
 			if (genomeComponentEntry.hasActivationBit()) {
-				LOGGER.debug("({}) {}={}", genomeComponentEntry.getActivationIndex(), genomeComponentEntry.getName(),
-						((BinaryVariable) solution.getVariable(genomeComponentEntry.getActivationIndex())).get(0));
+				LOGGER.debug("({}) {}={}", genomeComponentEntry.getActivationIndex(), genomeComponentEntry.getName(), ((BinaryVariable) solution.getVariable(genomeComponentEntry.getActivationIndex())).get(0));
 			}
 			for (Integer parameterIndex : genomeComponentEntry.getParameterIndices()) {
 				IParameter parameter = genomeComponentEntry.getParameter(parameterIndex);
@@ -300,10 +295,10 @@ public abstract class GenomeHandler {
 		}
 		return -1;
 	}
-	
+
 	public abstract List<Solution> getInitialSolutions(final FeatureExtractionMoeaProblem problem, final int populationSize) throws ComponentNotFoundException;
-	
-	public abstract Solution getEmptySolution(final FeatureExtractionMoeaProblem problem) ;
+
+	public abstract Solution getEmptySolution(final FeatureExtractionMoeaProblem problem);
 
 	public abstract Solution activateTsfresh(Solution solution);
 

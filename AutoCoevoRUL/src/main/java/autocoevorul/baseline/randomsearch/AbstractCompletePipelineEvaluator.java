@@ -44,8 +44,8 @@ public abstract class AbstractCompletePipelineEvaluator implements Runnable {
 	private IComponentInstance componentInstance;
 	private SearchResult bestPipeline;
 
-	public AbstractCompletePipelineEvaluator(final EventBus eventBus, final ExperimentConfiguration experimentConfiguration, final IDatasetSplitSet<ILabeledDataset<?>> datasetSplitSet,
-			final Timeout timeout, final IComponentInstance componentInstance, final SearchResult bestPipeline) {
+	public AbstractCompletePipelineEvaluator(final EventBus eventBus, final ExperimentConfiguration experimentConfiguration, final IDatasetSplitSet<ILabeledDataset<?>> datasetSplitSet, final Timeout timeout,
+			final IComponentInstance componentInstance, final SearchResult bestPipeline) {
 		super();
 		this.eventBus = eventBus;
 		this.experimentConfiguration = experimentConfiguration;
@@ -87,8 +87,7 @@ public abstract class AbstractCompletePipelineEvaluator implements Runnable {
 				runtimes.add(System.currentTimeMillis() - foldStart);
 			} catch (IOException | AlgorithmTimeoutedException | ExecutionException e) {
 				exception = ExceptionUtils.getStackTrace(e);
-				LOGGER.warn("Failed to fit and predict with Scikitlearn wrapper with pipeline {} on dataset {}. Error: \n {}", constructionInstruction, this.experimentConfiguration.getDatasetName(),
-						ExceptionUtils.getStackTrace(e));
+				LOGGER.warn("Failed to fit and predict with Scikitlearn wrapper with pipeline {} on dataset {}. Error: \n {}", constructionInstruction, this.experimentConfiguration.getDatasetName(), ExceptionUtils.getStackTrace(e));
 				break;
 			} catch (InterruptedException e) {
 				exception = ExceptionUtils.getStackTrace(e);

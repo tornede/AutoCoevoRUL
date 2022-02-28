@@ -50,8 +50,7 @@ public class RegressionGgpProblem {
 
 	private GGPSolutionCandidate ggpResult;
 
-	public RegressionGgpProblem(final EventBus eventBus, final ExperimentConfiguration experimentConfiguration, final List<SolutionDecoding> featureDecodings, final List<List<Double>> groundTruthTest)
-			throws IOException {
+	public RegressionGgpProblem(final EventBus eventBus, final ExperimentConfiguration experimentConfiguration, final List<SolutionDecoding> featureDecodings, final List<List<Double>> groundTruthTest) throws IOException {
 		if (featureDecodings.size() == 0) {
 			LOGGER.error("Given list of feature decodings is empty, which is not permitted.", featureDecodings.size());
 			throw new RuntimeException("Given list of feature decodings is empty, which is not permitted.");
@@ -75,8 +74,7 @@ public class RegressionGgpProblem {
 		// add this dummy component to the repository
 		componentRepository.add(componentToCompose);
 
-		IObjectEvaluator<IComponentInstance, Double> regressionEvaluator = new CompletePipelineEvaluator(this.eventBus, this.experimentConfiguration, this.featureDecodings,
-				this.groundTruthsForSplits);
+		IObjectEvaluator<IComponentInstance, Double> regressionEvaluator = new CompletePipelineEvaluator(this.eventBus, this.experimentConfiguration, this.featureDecodings, this.groundTruthsForSplits);
 
 		return new SoftwareConfigurationProblem<>(componentRepository, PLACEHOLDER_REQUIRED_INTERFACE_TO_SEARCH, regressionEvaluator);
 	}
@@ -91,10 +89,9 @@ public class RegressionGgpProblem {
 			double numberOfUsageRating = EFeatureRater.NUMBER_OF_USING_REGRESSORS.rateFeatureExtractor(solutionCandidatesWithFeatureExtractor);
 			featureDecoding.setPerformance(featureRating, numberOfUsageRating);
 
-			List<Double> performancesOfIncludingRegressors = featureExtractorStringsToSolutionCandidatesWithExtractor.get(featureDecoding.getConstructionInstruction()).stream().map(g -> g.getScore())
-					.collect(Collectors.toList());
-			FeatureExtractorEvaluatedEvent event = new FeatureExtractorEvaluatedEvent(featureDecoding.getConstructionInstruction(), this.experimentConfiguration.getDatasetName(), featureRating,
-					performancesOfIncludingRegressors, numberOfUsageRating);
+			List<Double> performancesOfIncludingRegressors = featureExtractorStringsToSolutionCandidatesWithExtractor.get(featureDecoding.getConstructionInstruction()).stream().map(g -> g.getScore()).collect(Collectors.toList());
+			FeatureExtractorEvaluatedEvent event = new FeatureExtractorEvaluatedEvent(featureDecoding.getConstructionInstruction(), this.experimentConfiguration.getDatasetName(), featureRating, performancesOfIncludingRegressors,
+					numberOfUsageRating);
 			this.eventBus.post(event);
 		}
 
@@ -113,8 +110,8 @@ public class RegressionGgpProblem {
 		String constructionString = "make_pipeline(" + featureTransformerConstructionInstructionAndImports.getX() + "," + regressorConstructionInstructionAndImports.getX() + ")";
 		String imports = featureTransformerConstructionInstructionAndImports.getY() + "\n" + regressorConstructionInstructionAndImports.getY();
 
-		RegressionGGPSolution regressionGGPSolution = new RegressionGGPSolution(constructionString, imports, this.getRegressionComponentInstanceFromGGPResult(),
-				this.getSolutionDecodingOfExtractorPresentInGGPResult().getComponentInstance(), this.ggpResult.getScore());
+		RegressionGGPSolution regressionGGPSolution = new RegressionGGPSolution(constructionString, imports, this.getRegressionComponentInstanceFromGGPResult(), this.getSolutionDecodingOfExtractorPresentInGGPResult().getComponentInstance(),
+				this.ggpResult.getScore());
 
 		this.eventBus.post(new GGPRegressionResultFoundEvent(regressionGGPSolution));
 
@@ -146,8 +143,7 @@ public class RegressionGgpProblem {
 	}
 
 	private List<GGPSolutionCandidate> runOptimizationOfRegressorsUsingExtractors() throws AlgorithmTimeoutedException, InterruptedException, AlgorithmExecutionCanceledException, AlgorithmException {
-		GrammarBasedGeneticProgramming ggp = new GrammarBasedGeneticProgramming(this.experimentConfiguration.getRegressionGGPConfig(), this.softwareConfigurationProblem,
-				this.experimentConfiguration.getSeed());
+		GrammarBasedGeneticProgramming ggp = new GrammarBasedGeneticProgramming(this.experimentConfiguration.getRegressionGGPConfig(), this.softwareConfigurationProblem, this.experimentConfiguration.getSeed());
 		this.ggpResult = ggp.call();
 		if (this.ggpResult != null) {
 			LOGGER.info("FOUND BEST SOLUTION: {} {}", this.ggpResult.getScore(), this.ggpResult.getComponentInstance());

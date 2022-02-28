@@ -51,19 +51,18 @@ public class AutoCoevolutionRunner extends AbstractRunner {
 	public String getDatabaseConfigurationFilePath() {
 		return "conf/experiments/coevolution.properties";
 	}
-	
-	public GenomeHandler getGenomeHandler(ExperimentConfiguration experimentConfiguration) throws IOException, ComponentNotFoundException, ExperimentEvaluationFailedException {
-//		return new GenomeHandlerV1(experimentConfiguration);
+
+	public GenomeHandler getGenomeHandler(final ExperimentConfiguration experimentConfiguration) throws IOException, ComponentNotFoundException, ExperimentEvaluationFailedException {
+		// return new GenomeHandlerV1(experimentConfiguration);
 		return new BinaryAttributeSelectionIncludedGenomeHandler(experimentConfiguration);
 	}
-	
 
-	public static void main(final String[] args) throws ExperimentEvaluationFailedException, IOException, ComponentNotFoundException, ClassNotFoundException, InterruptedException,
-			SplitFailedException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+	public static void main(final String[] args) throws ExperimentEvaluationFailedException, IOException, ComponentNotFoundException, ClassNotFoundException, InterruptedException, SplitFailedException, NoSuchFieldException,
+			SecurityException, IllegalArgumentException, IllegalAccessException {
 		String executor = args[0];
 		boolean setupDatabase = Boolean.parseBoolean(args[1]);
 		boolean executeExperiments = Boolean.parseBoolean(args[2]);
-		
+
 		new AutoCoevolutionRunner().run(executor, setupDatabase, executeExperiments);
 	}
 
@@ -88,12 +87,11 @@ public class AutoCoevolutionRunner extends AbstractRunner {
 
 				IDatasetSplitSet<ILabeledDataset<?>> datasetSplitSet = DataUtil.prepareDatasetSplits(experimentConfiguration, random);
 
-				GenomeHandler genomeHandler = getGenomeHandler(experimentConfiguration);
+				GenomeHandler genomeHandler = this.getGenomeHandler(experimentConfiguration);
 				FeatureExtractionMoeaProblem problem = new FeatureExtractionMoeaProblem(eventBus, experimentConfiguration, genomeHandler, datasetSplitSet);
-				Executor moeaExecutor = new Executor().withAlgorithm("NSGAII").withProblem(problem).withProperty("operator", "sbx+hux+pm+bf")
-						.withProperty("populationSize", experimentConfiguration.getFeaturePopulationSize()).withMaxTime(experimentConfiguration.getTotalTimeout().milliseconds())
-						.usingAlgorithmFactory(new CustomAlgorithmFactory(new InjectedInitialization(problem, experimentConfiguration.getFeaturePopulationSize(),
-								genomeHandler.getInitialSolutions(problem, experimentConfiguration.getFeaturePopulationSize()))));
+				Executor moeaExecutor = new Executor().withAlgorithm("NSGAII").withProblem(problem).withProperty("operator", "sbx+hux+pm+bf").withProperty("populationSize", experimentConfiguration.getFeaturePopulationSize())
+						.withMaxTime(experimentConfiguration.getTotalTimeout().milliseconds()).usingAlgorithmFactory(new CustomAlgorithmFactory(
+								new InjectedInitialization(problem, experimentConfiguration.getFeaturePopulationSize(), genomeHandler.getInitialSolutions(problem, experimentConfiguration.getFeaturePopulationSize()))));
 
 				try {
 					TimedComputation.compute(() -> moeaExecutor.run(), experimentConfiguration.getTotalTimeout(), "Total timeout exceeded.");
@@ -108,8 +106,8 @@ public class AutoCoevolutionRunner extends AbstractRunner {
 				this.logFinalPipeline(experimentConfiguration, searchResult, experimentDBColumns, processor);
 				this.executeFinalPipeline(experimentConfiguration, searchResult, experimentDBColumns, processor);
 
-			} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException | SplitFailedException | IOException | TrainingException | PredictionException
-					| ComponentNotFoundException | DatasetDeserializationFailedException | SQLException e) {
+			} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException | SplitFailedException | IOException | TrainingException | PredictionException | ComponentNotFoundException
+					| DatasetDeserializationFailedException | SQLException e) {
 				LOGGER.error("Coevolution failed.", e);
 				throw new RuntimeException(e);
 			}

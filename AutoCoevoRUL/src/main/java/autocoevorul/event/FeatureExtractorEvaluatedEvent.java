@@ -10,8 +10,7 @@ public class FeatureExtractorEvaluatedEvent extends AbstractEvent {
 	private List<Double> performancesOfIncludingRegressors;
 	private double numberOfUsage;
 
-	public FeatureExtractorEvaluatedEvent(final String pythonConstructionString, final String datasetName, final double aggregatedScore, final List<Double> performancesOfIncludingRegressors,
-			final double numberOfUsage) {
+	public FeatureExtractorEvaluatedEvent(final String pythonConstructionString, final String datasetName, final double aggregatedScore, final List<Double> performancesOfIncludingRegressors, final double numberOfUsage) {
 		this.pythonConstructionString = pythonConstructionString;
 		this.datasetName = datasetName;
 		this.aggregatedScore = aggregatedScore;

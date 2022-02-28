@@ -19,8 +19,7 @@ public class DataUtil {
 	public static IDatasetSplitSet<ILabeledDataset<?>> prepareDatasetSplits(final ExperimentConfiguration experimentConfiguration, final Random random)
 			throws ExperimentEvaluationFailedException, IllegalAccessException, IllegalArgumentException, InterruptedException, NoSuchFieldException, SecurityException, SplitFailedException {
 		ILabeledDataset<ILabeledInstance> trainingData = experimentConfiguration.getTrainingData();
-		IDatasetSplitSet<ILabeledDataset<?>> datasetSplitSet = new CachingMonteCarloCrossValidationSplitSetGenerator<>(new RandomHoldoutSplitter<>(random, 0.7),
-				experimentConfiguration.getNumberOfFolds(), random).nextSplitSet(trainingData);
+		IDatasetSplitSet<ILabeledDataset<?>> datasetSplitSet = new CachingMonteCarloCrossValidationSplitSetGenerator<>(new RandomHoldoutSplitter<>(random, 0.7), experimentConfiguration.getNumberOfFolds(), random).nextSplitSet(trainingData);
 		setDatasetRelationName(trainingData, datasetSplitSet, experimentConfiguration.getSeed());
 		return datasetSplitSet;
 	}

@@ -46,8 +46,8 @@ public class RandomSearchRunner extends AbstractRunner {
 		return "conf/experiments/randomSearch.properties";
 	}
 
-	public static void main(final String[] args) throws ExperimentEvaluationFailedException, IOException, ComponentNotFoundException, ClassNotFoundException, InterruptedException,
-			SplitFailedException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+	public static void main(final String[] args) throws ExperimentEvaluationFailedException, IOException, ComponentNotFoundException, ClassNotFoundException, InterruptedException, SplitFailedException, NoSuchFieldException,
+			SecurityException, IllegalArgumentException, IllegalAccessException {
 		String executor = args[0];
 		boolean setupDatabase = Boolean.parseBoolean(args[1]);
 		boolean executeExperiments = Boolean.parseBoolean(args[2]);
@@ -82,8 +82,8 @@ public class RandomSearchRunner extends AbstractRunner {
 				this.logFinalPipeline(experimentConfiguration, searchResult, experimentDBColumns, processor);
 				this.executeFinalPipeline(experimentConfiguration, searchResult, experimentDBColumns, processor);
 
-			} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException | SplitFailedException | IOException | TrainingException | PredictionException
-					| SQLException | AlgorithmTimeoutedException | ExecutionException e) {
+			} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException | SplitFailedException | IOException | TrainingException | PredictionException | SQLException | AlgorithmTimeoutedException
+					| ExecutionException e) {
 				LOGGER.error("Random search failed.", e);
 			}
 		};

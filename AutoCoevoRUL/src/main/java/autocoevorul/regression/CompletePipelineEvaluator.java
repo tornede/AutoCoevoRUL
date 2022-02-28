@@ -56,8 +56,7 @@ public class CompletePipelineEvaluator implements IObjectEvaluator<IComponentIns
 	private final List<List<? extends Double>> groundTruthsForSplits;
 	private final IAggregatedPredictionPerformanceMeasure<Double, IRegressionPrediction> metric;
 
-	public CompletePipelineEvaluator(final EventBus eventBus, final ExperimentConfiguration experimentConfiguration, final List<SolutionDecoding> featureExtractorStrings,
-			final List<List<Double>> groundTruthsForSplits) {
+	public CompletePipelineEvaluator(final EventBus eventBus, final ExperimentConfiguration experimentConfiguration, final List<SolutionDecoding> featureExtractorStrings, final List<List<Double>> groundTruthsForSplits) {
 		super();
 		this.eventBus = eventBus;
 		this.experimentConfiguration = experimentConfiguration;
@@ -79,8 +78,7 @@ public class CompletePipelineEvaluator implements IObjectEvaluator<IComponentIns
 		int idOfFeatureExtractorToUse = Integer.parseInt(componentInstance.getParameterValue(RegressionGgpProblem.PLACEHOLDER_FEATURE_EXTRACTOR_ID_PARAMETER_NAME));
 
 		String featureExtractorConstructionString = this.solutionDecodings.get(idOfFeatureExtractorToUse).getConstructionInstruction();
-		String hashCode = Hashing.sha256().hashString(StringUtils.join(featureExtractorConstructionString, this.solutionDecodings.get(idOfFeatureExtractorToUse).getImports()), StandardCharsets.UTF_8)
-				.toString();
+		String hashCode = Hashing.sha256().hashString(StringUtils.join(featureExtractorConstructionString, this.solutionDecodings.get(idOfFeatureExtractorToUse).getImports()), StandardCharsets.UTF_8).toString();
 		String featureExtractorHashcode = hashCode.startsWith("-") ? hashCode.replace("-", "1") : "0" + hashCode;
 
 		List<ILearnerRunReport> reports = new ArrayList<>(this.experimentConfiguration.getNumberOfFolds());
@@ -104,10 +102,10 @@ public class CompletePipelineEvaluator implements IObjectEvaluator<IComponentIns
 			try {
 
 				learner = this.createScikitlearnWrapper(componentInstance);
-				
+
 				File testDatasetFile = this.getTrainingDatasetFile(learner, testDatasetName); // TODO
 				File trainDatasetFile = this.getTrainingDatasetFile(learner, trainDatasetName); // TODO
-				
+
 				pipeline = learner.toString();
 
 				trainStart = System.currentTimeMillis();
@@ -146,16 +144,14 @@ public class CompletePipelineEvaluator implements IObjectEvaluator<IComponentIns
 		}
 		if (predictions.size() < this.groundTruthsForSplits.size()) {
 			// all folds have failed, so we have to throw an ObjectEvaluationFailedException
-			this.eventBus.post(new RegressorEvaluatedEvent(pipeline, featureExtractorConstructionString, this.getTrainingDatasetName(featureExtractorHashcode, -1), exception,
-					componentInstance.getAnnotation("generation")));
+			this.eventBus.post(new RegressorEvaluatedEvent(pipeline, featureExtractorConstructionString, this.getTrainingDatasetName(featureExtractorHashcode, -1), exception, componentInstance.getAnnotation("generation")));
 			throw new ObjectEvaluationFailedException("Could not evaluate learner " + pipeline + " as at least one fold has failed.");
 		}
 
 		this.logger.debug("Compute metric ({}) for the diff of predictions and ground truth.", this.metric.getClass().getName());
 		double score = this.metric.loss(this.groundTruthsForSplits, predictions);
 		this.logger.info("Computed value for metric {} of {} executions. Metric value is: {}. Pipeline: {}", this.metric, this.experimentConfiguration.getNumberOfFolds(), score, pipeline);
-		this.eventBus.post(new RegressorEvaluatedEvent(pipeline, featureExtractorConstructionString, this.getTrainingDatasetName(featureExtractorHashcode, -1), score, runtimes,
-				componentInstance.getAnnotation("generation")));
+		this.eventBus.post(new RegressorEvaluatedEvent(pipeline, featureExtractorConstructionString, this.getTrainingDatasetName(featureExtractorHashcode, -1), score, runtimes, componentInstance.getAnnotation("generation")));
 
 		return score;
 	}
@@ -167,34 +163,33 @@ public class CompletePipelineEvaluator implements IObjectEvaluator<IComponentIns
 	private String getTrainingDatasetName(final String featureExtractorHashcode, final int fold) {
 		return featureExtractorHashcode + "_" + this.experimentConfiguration.getDatasetName() + "_" + this.experimentConfiguration.getSeed() + "_" + fold + "_train";
 	}
-	
-	private File getTrainingDatasetFile(ScikitLearnRegressionWrapper<IPrediction, IPredictionBatch> learner, final String datasetName) {
+
+	private File getTrainingDatasetFile(final ScikitLearnRegressionWrapper<IPrediction, IPredictionBatch> learner, final String datasetName) {
 		try {
 			Field f = AScikitLearnWrapper.class.getDeclaredField("scikitLearnWrapperConfig");
 			f.setAccessible(true);
-			
+
 			Method x = IScikitLearnWrapperConfig.class.getDeclaredMethod("getTempFolder");
 			x.setAccessible(true);
-			
+
 			File tmpFolder = (File) x.invoke(f.get(learner));
 			return new File(tmpFolder + "/" + datasetName + ".arff");
-			
+
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchFieldException | NoSuchMethodException | SecurityException e) {
 			throw new RuntimeException("Could not figure out correct file for training or test dataset: " + datasetName);
 		}
-		
+
 	}
 
-	public IPredictionBatch fitAndPredictWithWrapperUnderTimeout(final ScikitLearnRegressionWrapper<IPrediction, IPredictionBatch> wrapper, final File trainDatasetFile, final String trainDatasetName, final File testDatasetFile, final String testDatasetName)
-			throws AlgorithmTimeoutedException, ExecutionException, InterruptedException {
+	public IPredictionBatch fitAndPredictWithWrapperUnderTimeout(final ScikitLearnRegressionWrapper<IPrediction, IPredictionBatch> wrapper, final File trainDatasetFile, final String trainDatasetName, final File testDatasetFile,
+			final String testDatasetName) throws AlgorithmTimeoutedException, ExecutionException, InterruptedException {
 		return TimedComputation.compute(() -> wrapper.fitAndPredict(trainDatasetFile, trainDatasetName, testDatasetFile, testDatasetName),
 				new Timeout(this.experimentConfiguration.getRegressionCandidateTimeout().seconds() + 2, TimeUnit.SECONDS),
 				"Node evaluation has timed out (" + TimeAwareNodeEvaluator.class.getName() + "::" + Thread.currentThread() + "-" + System.currentTimeMillis() + ")");
 	}
 
 	private ScikitLearnRegressionWrapper<IPrediction, IPredictionBatch> createScikitlearnWrapper(final IComponentInstance componentInstance) throws IOException, InterruptedException {
-		List<IComponentInstance> satisfiedRegressorInterfaceInstancesInComponentInstance = componentInstance
-				.getSatisfactionOfRequiredInterface(this.experimentConfiguration.getRegressionRequiredInterface());
+		List<IComponentInstance> satisfiedRegressorInterfaceInstancesInComponentInstance = componentInstance.getSatisfactionOfRequiredInterface(this.experimentConfiguration.getRegressionRequiredInterface());
 
 		if (satisfiedRegressorInterfaceInstancesInComponentInstance.size() != 1) {
 			throw new RuntimeException("More or less than one regressor under dummy component!");

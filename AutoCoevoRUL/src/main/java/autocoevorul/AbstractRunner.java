@@ -42,8 +42,8 @@ public abstract class AbstractRunner {
 
 	public abstract String getDatabaseConfigurationFilePath();
 
-	public void run(final String executor, final boolean setupDatabase, final boolean executeExperiments) throws ExperimentEvaluationFailedException, IOException, ComponentNotFoundException,
-			ClassNotFoundException, InterruptedException, SplitFailedException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+	public void run(final String executor, final boolean setupDatabase, final boolean executeExperiments) throws ExperimentEvaluationFailedException, IOException, ComponentNotFoundException, ClassNotFoundException, InterruptedException,
+			SplitFailedException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
 
 		ICoevolutionConfig expConfig = (ICoevolutionConfig) ConfigFactory.create(ICoevolutionConfig.class).loadPropertiesFromFile(new File(this.getExperimentConfigurationFilePath()));
 		IDatabaseConfig dbConfig = (IDatabaseConfig) ConfigFactory.create(IDatabaseConfig.class).loadPropertiesFromFile(new File(this.getDatabaseConfigurationFilePath()));
@@ -68,8 +68,7 @@ public abstract class AbstractRunner {
 		ExperimentDatabasePreparer preparer = new ExperimentDatabasePreparer(expConfig, handle);
 		try {
 			preparer.synchronizeExperiments();
-		} catch (ExperimentDBInteractionFailedException | IllegalExperimentSetupException | AlgorithmTimeoutedException | InterruptedException | AlgorithmExecutionCanceledException
-				| ExperimentAlreadyExistsInDatabaseException e) {
+		} catch (ExperimentDBInteractionFailedException | IllegalExperimentSetupException | AlgorithmTimeoutedException | InterruptedException | AlgorithmExecutionCanceledException | ExperimentAlreadyExistsInDatabaseException e) {
 			LOGGER.error("Couldn't synchrinze experiment table.", e);
 			System.exit(1);
 		}
@@ -77,8 +76,8 @@ public abstract class AbstractRunner {
 
 	protected abstract void executeExperiments(final String executor, final ICoevolutionConfig expConfig, final IDatabaseConfig dbConfig, final ExperimenterMySQLHandle handle);
 
-	protected void logFinalPipeline(final ExperimentConfiguration experimentConfiguration, final SearchResult result, final Map<String, Object> experimentDBColumns,
-			final IExperimentIntermediateResultProcessor processor) throws IOException, TrainingException, PredictionException, InterruptedException, ExperimentEvaluationFailedException {
+	protected void logFinalPipeline(final ExperimentConfiguration experimentConfiguration, final SearchResult result, final Map<String, Object> experimentDBColumns, final IExperimentIntermediateResultProcessor processor)
+			throws IOException, TrainingException, PredictionException, InterruptedException, ExperimentEvaluationFailedException {
 		if (result == null || result.getPipelineEvaluationReport() == null || result.getPipelineEvaluationReport().getConstructionInstruction() == null) {
 			LOGGER.info("No pipeline found.");
 			experimentDBColumns.put("final_pipeline", "None found.");
@@ -94,10 +93,9 @@ public abstract class AbstractRunner {
 		experimentDBColumns.clear();
 	}
 
-	protected void executeFinalPipeline(final ExperimentConfiguration experimentConfiguration, final SearchResult result, final Map<String, Object> experimentDBColumns,
-			final IExperimentIntermediateResultProcessor processor) throws IOException, TrainingException, PredictionException, InterruptedException, ExperimentEvaluationFailedException {
-		if (result == null || result.getPipelineEvaluationReport() == null || result.getPipelineEvaluationReport().getConstructionInstruction().isEmpty()
-				|| result.getPipelineEvaluationReport().getImports().isEmpty()) {
+	protected void executeFinalPipeline(final ExperimentConfiguration experimentConfiguration, final SearchResult result, final Map<String, Object> experimentDBColumns, final IExperimentIntermediateResultProcessor processor)
+			throws IOException, TrainingException, PredictionException, InterruptedException, ExperimentEvaluationFailedException {
+		if (result == null || result.getPipelineEvaluationReport() == null || result.getPipelineEvaluationReport().getConstructionInstruction().isEmpty() || result.getPipelineEvaluationReport().getImports().isEmpty()) {
 			return;
 		}
 		ScikitLearnTimeSeriesRegressionWrapper<IPrediction, IPredictionBatch> sklearnWrapper = new ScikitLearnTimeSeriesRegressionWrapper<>(result.getPipelineEvaluationReport().getConstructionInstruction(),
@@ -109,15 +107,14 @@ public abstract class AbstractRunner {
 		this.executeFinalPipeline(experimentConfiguration, sklearnWrapper, experimentDBColumns, processor);
 	}
 
-	protected void executeFinalPipeline(final ExperimentConfiguration experimentConfiguration, final ScikitLearnTimeSeriesRegressionWrapper<IPrediction, IPredictionBatch> sklearnWrapper,
-			final Map<String, Object> experimentDBColumns, final IExperimentIntermediateResultProcessor processor)
-			throws IOException, TrainingException, InterruptedException, ExperimentEvaluationFailedException {
+	protected void executeFinalPipeline(final ExperimentConfiguration experimentConfiguration, final ScikitLearnTimeSeriesRegressionWrapper<IPrediction, IPredictionBatch> sklearnWrapper, final Map<String, Object> experimentDBColumns,
+			final IExperimentIntermediateResultProcessor processor) throws IOException, TrainingException, InterruptedException, ExperimentEvaluationFailedException {
 		if (sklearnWrapper != null) {
 			try {
 				IPredictionBatch predictionBatch = sklearnWrapper.fitAndPredict(experimentConfiguration.getTrainingData(), experimentConfiguration.getEvaluationData());
 				List<Double> expected = experimentConfiguration.getEvaluationData().stream().map(x -> (Double) x.getLabel()).collect(Collectors.toList());
-				List<IRegressionPrediction> predictions = predictionBatch.getPredictions().stream()
-						.map(prediction -> new SingleTargetRegressionPrediction(Math.max(0, ((IRegressionPrediction) prediction).getDoublePrediction()))).collect(Collectors.toList());
+				List<IRegressionPrediction> predictions = predictionBatch.getPredictions().stream().map(prediction -> new SingleTargetRegressionPrediction(Math.max(0, ((IRegressionPrediction) prediction).getDoublePrediction())))
+						.collect(Collectors.toList());
 
 				for (ERulPerformanceMeasure performanceMeasure : ERulPerformanceMeasure.values()) {
 					double performance = performanceMeasure.loss(expected, predictions);

@@ -19,8 +19,8 @@ import autocoevorul.experiment.ExperimentConfiguration;
 
 public class RulCompletePipelineEvaluator extends AbstractCompletePipelineEvaluator {
 
-	public RulCompletePipelineEvaluator(final EventBus eventBus, final ExperimentConfiguration experimentConfiguration, final IDatasetSplitSet<ILabeledDataset<?>> datasetSplitSet,
-			final Timeout timeout, final IComponentInstance componentInstance, final SearchResult bestPipeline) {
+	public RulCompletePipelineEvaluator(final EventBus eventBus, final ExperimentConfiguration experimentConfiguration, final IDatasetSplitSet<ILabeledDataset<?>> datasetSplitSet, final Timeout timeout,
+			final IComponentInstance componentInstance, final SearchResult bestPipeline) {
 		super(eventBus, experimentConfiguration, datasetSplitSet, timeout, componentInstance, bestPipeline);
 	}
 

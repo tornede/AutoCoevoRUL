@@ -51,8 +51,8 @@ public class FeatureExtractionMoeaProblem extends AbstractProblem implements IBa
 	Map<Solution, SolutionDecoding> validSolutionDecodingsMap;
 	private RegressionGGPSolution bestPipeline;
 
-	public FeatureExtractionMoeaProblem(final EventBus eventBus, final ExperimentConfiguration experimentConfiguration, final GenomeHandler genomeHandler,
-			final IDatasetSplitSet<ILabeledDataset<?>> datasetSplitSet) throws DatasetDeserializationFailedException {
+	public FeatureExtractionMoeaProblem(final EventBus eventBus, final ExperimentConfiguration experimentConfiguration, final GenomeHandler genomeHandler, final IDatasetSplitSet<ILabeledDataset<?>> datasetSplitSet)
+			throws DatasetDeserializationFailedException {
 		super(genomeHandler.getNumberOfVariables(), 2);
 		this.eventBus = eventBus;
 		this.genomeHandler = genomeHandler;
@@ -90,14 +90,14 @@ public class FeatureExtractionMoeaProblem extends AbstractProblem implements IBa
 						ILabeledDataset<?> trainingData = this.datasetSplitSet.getFolds(s).get(0);
 						ILabeledDataset<?> testingData = this.datasetSplitSet.getFolds(s).get(1);
 
-						ScikitLearnTimeSeriesFeatureEngineeringWrapper<IPrediction, IPredictionBatch> sklearnWrapper = new ScikitLearnTimeSeriesFeatureEngineeringWrapper<>(solutionDecoding.getConstructionInstruction(), solutionDecoding.getImports());
+						ScikitLearnTimeSeriesFeatureEngineeringWrapper<IPrediction, IPredictionBatch> sklearnWrapper = new ScikitLearnTimeSeriesFeatureEngineeringWrapper<>(solutionDecoding.getConstructionInstruction(),
+								solutionDecoding.getImports());
 						sklearnWrapper.setScikitLearnWrapperConfig(this.experimentConfiguration.getScikitLearnWrapperConfig());
 						sklearnWrapper.setPythonTemplate(this.experimentConfiguration.getFeaturePythonTemplatePath());
 						sklearnWrapper.setTimeout(this.experimentConfiguration.getFeatureCandidateTimeoutPerFold());
 						sklearnWrapper.setSeed(this.experimentConfiguration.getSeed());
 
-						TimedComputation.compute(() -> sklearnWrapper.fitAndPredict(trainingData, testingData), this.experimentConfiguration.getFeatureCandidateTimeoutPerFold(),
-								"Feature engineering interrupted for fold " + s);
+						TimedComputation.compute(() -> sklearnWrapper.fitAndPredict(trainingData, testingData), this.experimentConfiguration.getFeatureCandidateTimeoutPerFold(), "Feature engineering interrupted for fold " + s);
 					}
 					this.validSolutionDecodingsMap.put(solution, solutionDecoding);
 				} catch (AlgorithmTimeoutedException | InterruptedException e) {

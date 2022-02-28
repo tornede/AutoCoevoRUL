@@ -21,9 +21,9 @@ public class SolutionDecoding {
 		this.componentInstance = componentInstances;
 
 		TimeseriesFeatureEngineeringScikitLearnFactory factory = new TimeseriesFeatureEngineeringScikitLearnFactory(); // TODO
-		
+
 		Set<String> importSet = new HashSet<>();
-		this.constructionInstruction = factory.extractSKLearnConstructInstruction(componentInstance, importSet);
+		this.constructionInstruction = factory.extractSKLearnConstructInstruction(this.componentInstance, importSet);
 
 		StringBuilder importsStringBuilder = new StringBuilder();
 		for (String importString : importSet.stream().sorted().collect(Collectors.toList())) {

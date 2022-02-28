@@ -21,8 +21,7 @@ public class ExperimentEvaluator implements IExperimentSetEvaluator {
 	}
 
 	@Override
-	public void evaluate(final ExperimentDBEntry experimentEntry, final IExperimentIntermediateResultProcessor processor)
-			throws ExperimentEvaluationFailedException, ExperimentFailurePredictionException, InterruptedException {
+	public void evaluate(final ExperimentDBEntry experimentEntry, final IExperimentIntermediateResultProcessor processor) throws ExperimentEvaluationFailedException, ExperimentFailurePredictionException, InterruptedException {
 		// TODO
 		// ExperimentConfiguration experimentConfiguration = new ExperimentConfiguration(experimentEntry, this.fullExperimentConfiguration);
 		//

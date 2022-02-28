@@ -47,7 +47,6 @@ public class BinaryAttributeSelectionIncludedGenomeHandlerTest extends AbstractT
 		}
 	}
 
-	
 	@Test
 	public void testCorrectGenomeSize() throws IOException, ComponentNotFoundException, ExperimentEvaluationFailedException {
 		assertEquals(24 // sensors
@@ -55,14 +54,13 @@ public class BinaryAttributeSelectionIncludedGenomeHandlerTest extends AbstractT
 				+ 2 // Tsfresh
 				, this.testGenomeHandler.getNumberOfVariables());
 	}
-	
+
 	@Test
 	public void testCorrectGenomeSizeWithMainSearchSpace() throws IOException, ComponentNotFoundException, ExperimentEvaluationFailedException {
 		final String file = "src/test/resources/searchspace/tests.cnf";
 		final ICoevolutionConfig config = (ICoevolutionConfig) ConfigFactory.create(ICoevolutionConfig.class).loadPropertiesFromFile(new File(file));
 		config.setProperty("featureSearchspace", "searchspace/timeseries/timeseries_feature_extraction.json");
-		final BinaryAttributeSelectionIncludedGenomeHandler genomeHandler = new BinaryAttributeSelectionIncludedGenomeHandler(
-				new ExperimentConfiguration(file, config));
+		final BinaryAttributeSelectionIncludedGenomeHandler genomeHandler = new BinaryAttributeSelectionIncludedGenomeHandler(new ExperimentConfiguration(file, config));
 
 		assertEquals(72 // TsFresh
 				+ 2 // AttributeTypes
@@ -70,7 +68,6 @@ public class BinaryAttributeSelectionIncludedGenomeHandlerTest extends AbstractT
 				+ 24 // Sensoren
 				, genomeHandler.getNumberOfVariables());
 	}
-
 
 	@Test
 	public void testInitialTsfreshSolutions() throws ComponentNotFoundException {
@@ -83,7 +80,6 @@ public class BinaryAttributeSelectionIncludedGenomeHandlerTest extends AbstractT
 		assertEquals(3, solutionDecoding.getImports().split("\n").length);
 		assertEquals("from ml4pdm.transformation.fixed_size import TsfreshFeature\n" + "from ml4pdm.transformation.fixed_size import TsfreshWrapper\n" + "from sklearn.pipeline import make_pipeline\n", solutionDecoding.getImports());
 	}
-
 
 	@Test
 	@Ignore
