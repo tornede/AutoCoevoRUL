@@ -37,7 +37,7 @@ public interface ICoevolutionConfig extends IExperimentSetConfig {
 	public int getNumberOfFolds();
 
 	@Key("featureSearchspace")
-	@DefaultValue("searchspace/timeseries/index.json")
+	@DefaultValue("searchspace/timeseries/timeseries_feature_extraction.json")
 	public String getFeatureSearchspace();
 
 	@Key("featureRequiredInterface")
@@ -110,9 +110,9 @@ public interface ICoevolutionConfig extends IExperimentSetConfig {
 	public class TimeoutConverter implements Converter<Timeout> {
 		@Override
 		public Timeout convert(final Method targetMethod, final String text) {
-			String[] split = text.split(":", -1);
-			Integer amount = Integer.parseInt(split[0]);
-			TimeUnit unit = TimeUnit.valueOf(split[1]);
+			final String[] split = text.split(":", -1);
+			final Integer amount = Integer.parseInt(split[0]);
+			final TimeUnit unit = TimeUnit.valueOf(split[1]);
 			return new Timeout(amount, unit);
 		}
 	}

@@ -1,22 +1,22 @@
 {
-  "repository": "ml4pdm.transformation",
-  "include": [],
-  "components": [
-    {
-      "name": "ml4pdm.transformation.TSFreshWrapper",
-      "providedInterface": [
-        "TimeseriesToTabularFeatureEngineering"
-      ],
-      "requiredInterface": [
+    "repository": "ml4pdm.transformation",
+    "include": [],
+    "components": [
         {
-          "id": "tsfresh_features",
-          "name": "TsfreshFeature",
-          "min": 1,
-          "max": 2,
-          "unique": "true"
+            "name": "ml4pdm.transformation.fixed_size._tsfresh.TsfreshWrapper",
+            "providedInterface": [
+                "TimeseriesToTabularFeatureEngineering"
+            ],
+            "requiredInterface": [
+                {
+                    "id": "tsfresh_features",
+                    "name": "TsfreshFeature",
+                    "min": 1,
+                    "max": 2,
+                    "unique": "true"
+                }
+            ],
+            "parameters": []
         }
-      ],
-      "parameters": []
-    }
-  ]
+    ]
 }

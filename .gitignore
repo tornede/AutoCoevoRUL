@@ -544,3 +544,5 @@ dmypy.json
 # Database Configuration
 conf/experiments/db.properties
 
+# searchspace extraction
+searchspace_extraction/**/*.json

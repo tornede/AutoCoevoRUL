@@ -1,7 +1,7 @@
 cpu.max = 7
 mem.max = 10000
 
-dataPath = ../data/
+dataPath = ../Data/
 numberOfFolds = 3
 totalTimeout = 10:MINUTES
 

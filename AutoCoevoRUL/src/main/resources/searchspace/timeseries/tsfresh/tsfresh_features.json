@@ -1,21 +1,582 @@
 {
-  "repository": "ml4pdm.transformation",
-  "components": [
-    {
-      "name": "ml4pdm.transformation.TsfreshFeature.MINIMUM",
-      "providedInterface": [
-        "TsfreshFeature"
-      ],
-      "requiredInterface": [],
-      "parameters": []
-    },
-    {
-      "name": "ml4pdm.transformation.TsfreshFeature.MAXIMUM",
-      "providedInterface": [
-        "TsfreshFeature"
-      ],
-      "requiredInterface": [],
-      "parameters": []
-    }
-  ]
+    "repository": "ml4pdm.transformation",
+    "include": [],
+    "components": [
+        {
+            "name": "ml4pdm.transformation.fixed_size._tsfresh.TsfreshFeature.ABS_ENERGY",
+            "providedInterface": [
+                "TsfreshFeature"
+            ],
+            "requiredInterface": [],
+            "parameters": []
+        },
+        {
+            "name": "ml4pdm.transformation.fixed_size._tsfresh.TsfreshFeature.ABSOLUTE_SUM_OF_CHANGES",
+            "providedInterface": [
+                "TsfreshFeature"
+            ],
+            "requiredInterface": [],
+            "parameters": []
+        },
+        {
+            "name": "ml4pdm.transformation.fixed_size._tsfresh.TsfreshFeature.AGG_AUTOCORRELATION",
+            "providedInterface": [
+                "TsfreshFeature"
+            ],
+            "requiredInterface": [],
+            "parameters": []
+        },
+        {
+            "name": "ml4pdm.transformation.fixed_size._tsfresh.TsfreshFeature.AGG_LINEAR_TREND",
+            "providedInterface": [
+                "TsfreshFeature"
+            ],
+            "requiredInterface": [],
+            "parameters": []
+        },
+        {
+            "name": "ml4pdm.transformation.fixed_size._tsfresh.TsfreshFeature.APPROXIMATE_ENTROPY",
+            "providedInterface": [
+                "TsfreshFeature"
+            ],
+            "requiredInterface": [],
+            "parameters": []
+        },
+        {
+            "name": "ml4pdm.transformation.fixed_size._tsfresh.TsfreshFeature.AR_COEFFICIENT",
+            "providedInterface": [
+                "TsfreshFeature"
+            ],
+            "requiredInterface": [],
+            "parameters": []
+        },
+        {
+            "name": "ml4pdm.transformation.fixed_size._tsfresh.TsfreshFeature.AUGMENTED_DICKEY_FULLER",
+            "providedInterface": [
+                "TsfreshFeature"
+            ],
+            "requiredInterface": [],
+            "parameters": []
+        },
+        {
+            "name": "ml4pdm.transformation.fixed_size._tsfresh.TsfreshFeature.AUTOCORRELATION",
+            "providedInterface": [
+                "TsfreshFeature"
+            ],
+            "requiredInterface": [],
+            "parameters": []
+        },
+        {
+            "name": "ml4pdm.transformation.fixed_size._tsfresh.TsfreshFeature.BENFORD_CORRELATION",
+            "providedInterface": [
+                "TsfreshFeature"
+            ],
+            "requiredInterface": [],
+            "parameters": []
+        },
+        {
+            "name": "ml4pdm.transformation.fixed_size._tsfresh.TsfreshFeature.BINNED_ENTROPY",
+            "providedInterface": [
+                "TsfreshFeature"
+            ],
+            "requiredInterface": [],
+            "parameters": []
+        },
+        {
+            "name": "ml4pdm.transformation.fixed_size._tsfresh.TsfreshFeature.C3",
+            "providedInterface": [
+                "TsfreshFeature"
+            ],
+            "requiredInterface": [],
+            "parameters": []
+        },
+        {
+            "name": "ml4pdm.transformation.fixed_size._tsfresh.TsfreshFeature.CHANGE_QUANTILES",
+            "providedInterface": [
+                "TsfreshFeature"
+            ],
+            "requiredInterface": [],
+            "parameters": []
+        },
+        {
+            "name": "ml4pdm.transformation.fixed_size._tsfresh.TsfreshFeature.CID_CE",
+            "providedInterface": [
+                "TsfreshFeature"
+            ],
+            "requiredInterface": [],
+            "parameters": []
+        },
+        {
+            "name": "ml4pdm.transformation.fixed_size._tsfresh.TsfreshFeature.COUNT_ABOVE",
+            "providedInterface": [
+                "TsfreshFeature"
+            ],
+            "requiredInterface": [],
+            "parameters": []
+        },
+        {
+            "name": "ml4pdm.transformation.fixed_size._tsfresh.TsfreshFeature.COUNT_ABOVE_MEAN",
+            "providedInterface": [
+                "TsfreshFeature"
+            ],
+            "requiredInterface": [],
+            "parameters": []
+        },
+        {
+            "name": "ml4pdm.transformation.fixed_size._tsfresh.TsfreshFeature.COUNT_BELOW",
+            "providedInterface": [
+                "TsfreshFeature"
+            ],
+            "requiredInterface": [],
+            "parameters": []
+        },
+        {
+            "name": "ml4pdm.transformation.fixed_size._tsfresh.TsfreshFeature.COUNT_BELOW_MEAN",
+            "providedInterface": [
+                "TsfreshFeature"
+            ],
+            "requiredInterface": [],
+            "parameters": []
+        },
+        {
+            "name": "ml4pdm.transformation.fixed_size._tsfresh.TsfreshFeature.CWT_COEFFICIENTS",
+            "providedInterface": [
+                "TsfreshFeature"
+            ],
+            "requiredInterface": [],
+            "parameters": []
+        },
+        {
+            "name": "ml4pdm.transformation.fixed_size._tsfresh.TsfreshFeature.ENERGY_RATIO_BY_CHUNKS",
+            "providedInterface": [
+                "TsfreshFeature"
+            ],
+            "requiredInterface": [],
+            "parameters": []
+        },
+        {
+            "name": "ml4pdm.transformation.fixed_size._tsfresh.TsfreshFeature.FFT_AGGREGATED",
+            "providedInterface": [
+                "TsfreshFeature"
+            ],
+            "requiredInterface": [],
+            "parameters": []
+        },
+        {
+            "name": "ml4pdm.transformation.fixed_size._tsfresh.TsfreshFeature.FFT_COEFFICIENT",
+            "providedInterface": [
+                "TsfreshFeature"
+            ],
+            "requiredInterface": [],
+            "parameters": []
+        },
+        {
+            "name": "ml4pdm.transformation.fixed_size._tsfresh.TsfreshFeature.FIRST_LOCATION_OF_MAXIMUM",
+            "providedInterface": [
+                "TsfreshFeature"
+            ],
+            "requiredInterface": [],
+            "parameters": []
+        },
+        {
+            "name": "ml4pdm.transformation.fixed_size._tsfresh.TsfreshFeature.FIRST_LOCATION_OF_MINIMUM",
+            "providedInterface": [
+                "TsfreshFeature"
+            ],
+            "requiredInterface": [],
+            "parameters": []
+        },
+        {
+            "name": "ml4pdm.transformation.fixed_size._tsfresh.TsfreshFeature.FOURIER_ENTROPY",
+            "providedInterface": [
+                "TsfreshFeature"
+            ],
+            "requiredInterface": [],
+            "parameters": []
+        },
+        {
+            "name": "ml4pdm.transformation.fixed_size._tsfresh.TsfreshFeature.FRIEDRICH_COEFFICIENTS",
+            "providedInterface": [
+                "TsfreshFeature"
+            ],
+            "requiredInterface": [],
+            "parameters": []
+        },
+        {
+            "name": "ml4pdm.transformation.fixed_size._tsfresh.TsfreshFeature.HAS_DUPLICATE",
+            "providedInterface": [
+                "TsfreshFeature"
+            ],
+            "requiredInterface": [],
+            "parameters": []
+        },
+        {
+            "name": "ml4pdm.transformation.fixed_size._tsfresh.TsfreshFeature.HAS_DUPLICATE_MAX",
+            "providedInterface": [
+                "TsfreshFeature"
+            ],
+            "requiredInterface": [],
+            "parameters": []
+        },
+        {
+            "name": "ml4pdm.transformation.fixed_size._tsfresh.TsfreshFeature.HAS_DUPLICATE_MIN",
+            "providedInterface": [
+                "TsfreshFeature"
+            ],
+            "requiredInterface": [],
+            "parameters": []
+        },
+        {
+            "name": "ml4pdm.transformation.fixed_size._tsfresh.TsfreshFeature.INDEX_MASS_QUANTILE",
+            "providedInterface": [
+                "TsfreshFeature"
+            ],
+            "requiredInterface": [],
+            "parameters": []
+        },
+        {
+            "name": "ml4pdm.transformation.fixed_size._tsfresh.TsfreshFeature.KURTOSIS",
+            "providedInterface": [
+                "TsfreshFeature"
+            ],
+            "requiredInterface": [],
+            "parameters": []
+        },
+        {
+            "name": "ml4pdm.transformation.fixed_size._tsfresh.TsfreshFeature.LARGE_STANDARD_DEVIATION",
+            "providedInterface": [
+                "TsfreshFeature"
+            ],
+            "requiredInterface": [],
+            "parameters": []
+        },
+        {
+            "name": "ml4pdm.transformation.fixed_size._tsfresh.TsfreshFeature.LAST_LOCATION_OF_MAXIMUM",
+            "providedInterface": [
+                "TsfreshFeature"
+            ],
+            "requiredInterface": [],
+            "parameters": []
+        },
+        {
+            "name": "ml4pdm.transformation.fixed_size._tsfresh.TsfreshFeature.LAST_LOCATION_OF_MINIMUM",
+            "providedInterface": [
+                "TsfreshFeature"
+            ],
+            "requiredInterface": [],
+            "parameters": []
+        },
+        {
+            "name": "ml4pdm.transformation.fixed_size._tsfresh.TsfreshFeature.LEMPEL_ZIV_COMPLEXITY",
+            "providedInterface": [
+                "TsfreshFeature"
+            ],
+            "requiredInterface": [],
+            "parameters": []
+        },
+        {
+            "name": "ml4pdm.transformation.fixed_size._tsfresh.TsfreshFeature.LENGTH",
+            "providedInterface": [
+                "TsfreshFeature"
+            ],
+            "requiredInterface": [],
+            "parameters": []
+        },
+        {
+            "name": "ml4pdm.transformation.fixed_size._tsfresh.TsfreshFeature.LINEAR_TREND",
+            "providedInterface": [
+                "TsfreshFeature"
+            ],
+            "requiredInterface": [],
+            "parameters": []
+        },
+        {
+            "name": "ml4pdm.transformation.fixed_size._tsfresh.TsfreshFeature.LINEAR_TREND_TIMEWISE",
+            "providedInterface": [
+                "TsfreshFeature"
+            ],
+            "requiredInterface": [],
+            "parameters": []
+        },
+        {
+            "name": "ml4pdm.transformation.fixed_size._tsfresh.TsfreshFeature.LONGEST_STRIKE_ABOVE_MEAN",
+            "providedInterface": [
+                "TsfreshFeature"
+            ],
+            "requiredInterface": [],
+            "parameters": []
+        },
+        {
+            "name": "ml4pdm.transformation.fixed_size._tsfresh.TsfreshFeature.LONGEST_STRIKE_BELOW_MEAN",
+            "providedInterface": [
+                "TsfreshFeature"
+            ],
+            "requiredInterface": [],
+            "parameters": []
+        },
+        {
+            "name": "ml4pdm.transformation.fixed_size._tsfresh.TsfreshFeature.MAX_LANGEVIN_FIXED_POINT",
+            "providedInterface": [
+                "TsfreshFeature"
+            ],
+            "requiredInterface": [],
+            "parameters": []
+        },
+        {
+            "name": "ml4pdm.transformation.fixed_size._tsfresh.TsfreshFeature.MAXIMUM",
+            "providedInterface": [
+                "TsfreshFeature"
+            ],
+            "requiredInterface": [],
+            "parameters": []
+        },
+        {
+            "name": "ml4pdm.transformation.fixed_size._tsfresh.TsfreshFeature.MEAN",
+            "providedInterface": [
+                "TsfreshFeature"
+            ],
+            "requiredInterface": [],
+            "parameters": []
+        },
+        {
+            "name": "ml4pdm.transformation.fixed_size._tsfresh.TsfreshFeature.MEAN_ABS_CHANGE",
+            "providedInterface": [
+                "TsfreshFeature"
+            ],
+            "requiredInterface": [],
+            "parameters": []
+        },
+        {
+            "name": "ml4pdm.transformation.fixed_size._tsfresh.TsfreshFeature.MEAN_CHANGE",
+            "providedInterface": [
+                "TsfreshFeature"
+            ],
+            "requiredInterface": [],
+            "parameters": []
+        },
+        {
+            "name": "ml4pdm.transformation.fixed_size._tsfresh.TsfreshFeature.MEAN_SECOND_DERIVATIVE_CENTRAL",
+            "providedInterface": [
+                "TsfreshFeature"
+            ],
+            "requiredInterface": [],
+            "parameters": []
+        },
+        {
+            "name": "ml4pdm.transformation.fixed_size._tsfresh.TsfreshFeature.MEDIAN",
+            "providedInterface": [
+                "TsfreshFeature"
+            ],
+            "requiredInterface": [],
+            "parameters": []
+        },
+        {
+            "name": "ml4pdm.transformation.fixed_size._tsfresh.TsfreshFeature.MINIMUM",
+            "providedInterface": [
+                "TsfreshFeature"
+            ],
+            "requiredInterface": [],
+            "parameters": []
+        },
+        {
+            "name": "ml4pdm.transformation.fixed_size._tsfresh.TsfreshFeature.NUMBER_CROSSING_M",
+            "providedInterface": [
+                "TsfreshFeature"
+            ],
+            "requiredInterface": [],
+            "parameters": []
+        },
+        {
+            "name": "ml4pdm.transformation.fixed_size._tsfresh.TsfreshFeature.NUMBER_CWT_PEAKS",
+            "providedInterface": [
+                "TsfreshFeature"
+            ],
+            "requiredInterface": [],
+            "parameters": []
+        },
+        {
+            "name": "ml4pdm.transformation.fixed_size._tsfresh.TsfreshFeature.NUMBER_PEAKS",
+            "providedInterface": [
+                "TsfreshFeature"
+            ],
+            "requiredInterface": [],
+            "parameters": []
+        },
+        {
+            "name": "ml4pdm.transformation.fixed_size._tsfresh.TsfreshFeature.PARTIAL_AUTOCORRELATION",
+            "providedInterface": [
+                "TsfreshFeature"
+            ],
+            "requiredInterface": [],
+            "parameters": []
+        },
+        {
+            "name": "ml4pdm.transformation.fixed_size._tsfresh.TsfreshFeature.PERCENTAGE_OF_REOCCURRING_DATAPOINTS_TO_ALL_DATAPOINTS",
+            "providedInterface": [
+                "TsfreshFeature"
+            ],
+            "requiredInterface": [],
+            "parameters": []
+        },
+        {
+            "name": "ml4pdm.transformation.fixed_size._tsfresh.TsfreshFeature.PERCENTAGE_OF_REOCCURRING_VALUES_TO_ALL_VALUES",
+            "providedInterface": [
+                "TsfreshFeature"
+            ],
+            "requiredInterface": [],
+            "parameters": []
+        },
+        {
+            "name": "ml4pdm.transformation.fixed_size._tsfresh.TsfreshFeature.PERMUTATION_ENTROPY",
+            "providedInterface": [
+                "TsfreshFeature"
+            ],
+            "requiredInterface": [],
+            "parameters": []
+        },
+        {
+            "name": "ml4pdm.transformation.fixed_size._tsfresh.TsfreshFeature.QUANTILE",
+            "providedInterface": [
+                "TsfreshFeature"
+            ],
+            "requiredInterface": [],
+            "parameters": []
+        },
+        {
+            "name": "ml4pdm.transformation.fixed_size._tsfresh.TsfreshFeature.RANGE_COUNT",
+            "providedInterface": [
+                "TsfreshFeature"
+            ],
+            "requiredInterface": [],
+            "parameters": []
+        },
+        {
+            "name": "ml4pdm.transformation.fixed_size._tsfresh.TsfreshFeature.RATIO_BEYOND_R_SIGMA",
+            "providedInterface": [
+                "TsfreshFeature"
+            ],
+            "requiredInterface": [],
+            "parameters": []
+        },
+        {
+            "name": "ml4pdm.transformation.fixed_size._tsfresh.TsfreshFeature.RATIO_VALUE_NUMBER_TO_TIME_SERIES_LENGTH",
+            "providedInterface": [
+                "TsfreshFeature"
+            ],
+            "requiredInterface": [],
+            "parameters": []
+        },
+        {
+            "name": "ml4pdm.transformation.fixed_size._tsfresh.TsfreshFeature.ROOT_MEAN_SQUARE",
+            "providedInterface": [
+                "TsfreshFeature"
+            ],
+            "requiredInterface": [],
+            "parameters": []
+        },
+        {
+            "name": "ml4pdm.transformation.fixed_size._tsfresh.TsfreshFeature.SAMPLE_ENTROPY",
+            "providedInterface": [
+                "TsfreshFeature"
+            ],
+            "requiredInterface": [],
+            "parameters": []
+        },
+        {
+            "name": "ml4pdm.transformation.fixed_size._tsfresh.TsfreshFeature.SKEWNESS",
+            "providedInterface": [
+                "TsfreshFeature"
+            ],
+            "requiredInterface": [],
+            "parameters": []
+        },
+        {
+            "name": "ml4pdm.transformation.fixed_size._tsfresh.TsfreshFeature.SPKT_WELCH_DENSITY",
+            "providedInterface": [
+                "TsfreshFeature"
+            ],
+            "requiredInterface": [],
+            "parameters": []
+        },
+        {
+            "name": "ml4pdm.transformation.fixed_size._tsfresh.TsfreshFeature.STANDARD_DEVIATION",
+            "providedInterface": [
+                "TsfreshFeature"
+            ],
+            "requiredInterface": [],
+            "parameters": []
+        },
+        {
+            "name": "ml4pdm.transformation.fixed_size._tsfresh.TsfreshFeature.SUM_OF_REOCCURRING_DATA_POINTS",
+            "providedInterface": [
+                "TsfreshFeature"
+            ],
+            "requiredInterface": [],
+            "parameters": []
+        },
+        {
+            "name": "ml4pdm.transformation.fixed_size._tsfresh.TsfreshFeature.SUM_OF_REOCCURRING_VALUES",
+            "providedInterface": [
+                "TsfreshFeature"
+            ],
+            "requiredInterface": [],
+            "parameters": []
+        },
+        {
+            "name": "ml4pdm.transformation.fixed_size._tsfresh.TsfreshFeature.SUM_VALUES",
+            "providedInterface": [
+                "TsfreshFeature"
+            ],
+            "requiredInterface": [],
+            "parameters": []
+        },
+        {
+            "name": "ml4pdm.transformation.fixed_size._tsfresh.TsfreshFeature.SYMMETRY_LOOKING",
+            "providedInterface": [
+                "TsfreshFeature"
+            ],
+            "requiredInterface": [],
+            "parameters": []
+        },
+        {
+            "name": "ml4pdm.transformation.fixed_size._tsfresh.TsfreshFeature.TIME_REVERSAL_ASYMMETRY_STATISTIC",
+            "providedInterface": [
+                "TsfreshFeature"
+            ],
+            "requiredInterface": [],
+            "parameters": []
+        },
+        {
+            "name": "ml4pdm.transformation.fixed_size._tsfresh.TsfreshFeature.VALUE_COUNT",
+            "providedInterface": [
+                "TsfreshFeature"
+            ],
+            "requiredInterface": [],
+            "parameters": []
+        },
+        {
+            "name": "ml4pdm.transformation.fixed_size._tsfresh.TsfreshFeature.VARIANCE",
+            "providedInterface": [
+                "TsfreshFeature"
+            ],
+            "requiredInterface": [],
+            "parameters": []
+        },
+        {
+            "name": "ml4pdm.transformation.fixed_size._tsfresh.TsfreshFeature.VARIANCE_LARGER_THAN_STANDARD_DEVIATION",
+            "providedInterface": [
+                "TsfreshFeature"
+            ],
+            "requiredInterface": [],
+            "parameters": []
+        },
+        {
+            "name": "ml4pdm.transformation.fixed_size._tsfresh.TsfreshFeature.VARIATION_COEFFICIENT",
+            "providedInterface": [
+                "TsfreshFeature"
+            ],
+            "requiredInterface": [],
+            "parameters": []
+        }
+    ]
 }

@@ -69,7 +69,7 @@ public class ExperimentConfiguration {
 
 	private IScikitLearnWrapperConfig scikitLearnWrapperConfig;
 
-	private ExperimentConfiguration(final String experimentConfigFilePath, final ICoevolutionConfig experimentSetConfig) {
+	public ExperimentConfiguration(final String experimentConfigFilePath, final ICoevolutionConfig experimentSetConfig) {
 		this.experimentConfigFilePath = experimentConfigFilePath;
 		this.experimentId = experimentSetConfig.getExperimentId();
 		this.datasetName = experimentSetConfig.getDatasetName();
@@ -77,7 +77,7 @@ public class ExperimentConfiguration {
 		this.evaluationDataPath = experimentSetConfig.getDataPath() + experimentSetConfig.getDatasetName().replace("train", "test");
 		try {
 			this.seed = experimentSetConfig.getSeed();
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			LOGGER.warn("Could not read seed from config file.");
 		}
 		this.numberOfFolds = experimentSetConfig.getNumberOfFolds();
@@ -93,7 +93,7 @@ public class ExperimentConfiguration {
 		this.featureCandidateTimeout = experimentSetConfig.getFeatureCandidateTimeout();
 		try {
 			this.featureObjectiveMeasure = experimentSetConfig.getFeatureObjectiveMeasure();
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			LOGGER.warn("Could not read feature objective measure from config file.");
 		}
 
@@ -117,11 +117,10 @@ public class ExperimentConfiguration {
 		this(CONFIG_FILE_PATH);
 	}
 
-	public ExperimentConfiguration(final String experimentConfigFilePath, final ICoevolutionConfig experimentSetConfig, final ExperimentDBEntry experimentEntry)
-			throws ExperimentEvaluationFailedException {
+	public ExperimentConfiguration(final String experimentConfigFilePath, final ICoevolutionConfig experimentSetConfig, final ExperimentDBEntry experimentEntry) throws ExperimentEvaluationFailedException {
 		this(experimentConfigFilePath, experimentSetConfig);
 
-		Map<String, String> keyFields = experimentEntry.getExperiment().getValuesOfKeyFields();
+		final Map<String, String> keyFields = experimentEntry.getExperiment().getValuesOfKeyFields();
 
 		this.experimentId = experimentEntry.getId();
 		this.datasetName = keyFields.get("datasetName");
@@ -144,8 +143,7 @@ public class ExperimentConfiguration {
 		}
 
 		this.featureGenerationTimeout = new Timeout(this.featureCandidateTimeout.seconds() * this.featurePopulationSize + this.featurePopulationSize, TimeUnit.SECONDS);
-		this.regressionGenerationTimeout = new Timeout(
-				this.regressionCandidateTimeout.seconds() * this.getRegressionGGPConfig().getPopulationSize() + this.getRegressionGGPConfig().getPopulationSize(), TimeUnit.SECONDS);
+		this.regressionGenerationTimeout = new Timeout(this.regressionCandidateTimeout.seconds() * this.getRegressionGGPConfig().getPopulationSize() + this.getRegressionGGPConfig().getPopulationSize(), TimeUnit.SECONDS);
 		this.rulTimeout = new Timeout(this.featureCandidateTimeout.milliseconds() + this.regressionCandidateTimeout.milliseconds(), TimeUnit.MILLISECONDS);
 
 		this.scikitLearnWrapperConfig = ConfigCache.getOrCreate(IScikitLearnWrapperConfig.class);
@@ -185,11 +183,11 @@ public class ExperimentConfiguration {
 	}
 
 	public ILabeledDataset<ILabeledInstance> readDataFile(final String filePath) throws ExperimentEvaluationFailedException {
-		long start = System.currentTimeMillis();
+		final long start = System.currentTimeMillis();
 		ILabeledDataset<ILabeledInstance> dataset;
 		try {
 			dataset = new ArffDatasetAdapter().readDataset(new File(filePath));
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			throw new ExperimentEvaluationFailedException("Could not deserialize dataset: " + new File(filePath).getAbsolutePath(), e);
 		}
 		LOGGER.info("Data {} read. Time to create dataset object was {}ms", filePath, System.currentTimeMillis() - start);
@@ -198,7 +196,7 @@ public class ExperimentConfiguration {
 	}
 
 	public Map<String, String> getTemplateVariables() {
-		HashMap<String, String> templateVariables = new HashMap<>();
+		final HashMap<String, String> templateVariables = new HashMap<>();
 		templateVariables.put("instance_lengt", "350");
 		return templateVariables;
 	}
@@ -268,8 +266,7 @@ public class ExperimentConfiguration {
 	}
 
 	public IGrammarBasedGeneticProgrammingConfig getRegressionGGPConfig() {
-		IGrammarBasedGeneticProgrammingConfig config = (IGrammarBasedGeneticProgrammingConfig) ConfigFactory.create(IGrammarBasedGeneticProgrammingConfig.class)
-				.loadPropertiesFromFile(new File(this.experimentConfigFilePath));
+		final IGrammarBasedGeneticProgrammingConfig config = (IGrammarBasedGeneticProgrammingConfig) ConfigFactory.create(IGrammarBasedGeneticProgrammingConfig.class).loadPropertiesFromFile(new File(this.experimentConfigFilePath));
 		config.setProperty("timeout", "" + (Math.max(1, this.deadline - System.currentTimeMillis())));
 		config.setProperty("cpus", "" + (this.numberOfCPUs));
 		return config;
@@ -305,7 +302,7 @@ public class ExperimentConfiguration {
 
 	@Override
 	public String toString() {
-		StringJoiner sj = new StringJoiner("\n\t");
+		final StringJoiner sj = new StringJoiner("\n\t");
 		sj.add("ExperimentConfiguration:");
 		sj.add("experimentId=" + this.experimentId);
 		sj.add("trainingDataPath=" + this.trainingDataPath);

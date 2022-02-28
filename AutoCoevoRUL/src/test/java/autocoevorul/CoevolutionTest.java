@@ -33,20 +33,20 @@ public class CoevolutionTest extends AbstractTest {
 	@Test
 	@Ignore
 	public void testRegressionSearchWithTsfresh() throws Exception {
-		IDatasetSplitSet<ILabeledDataset<?>> datasetSplitSet = DataUtil.prepareDatasetSplits(this.getExperimentConfiguration(), new Random(this.getExperimentConfiguration().getSeed()));
+		IDatasetSplitSet<ILabeledDataset<?>> datasetSplitSet = DataUtil.prepareDatasetSplits(this.getTestExperimentConfiguration(), new Random(this.getTestExperimentConfiguration().getSeed()));
 
 		List<SolutionDecoding> validSolutionDecodings = new ArrayList<>();
-		validSolutionDecodings.add(this.genomeHandler.decodeGenome(this.genomeHandler.activateTsfresh(this.genomeHandler.getEmptySolution(this.getFeatureExtractionMoeaProblem()))));
+		validSolutionDecodings.add(this.testGenomeHandler.decodeGenome(this.testGenomeHandler.activateTsfresh(this.testGenomeHandler.getEmptySolution(this.getFeatureExtractionMoeaProblem()))));
 
 		List<List<Double>> groundTruthTest = new ArrayList<>();
-		for (int fold = 0; fold < this.getExperimentConfiguration().getNumberOfFolds(); fold++) {
+		for (int fold = 0; fold < this.getTestExperimentConfiguration().getNumberOfFolds(); fold++) {
 			groundTruthTest.add(datasetSplitSet.getFolds(fold).get(1).stream().map(instance -> (Double) instance.getLabel()).collect(Collectors.toList()));
 		}
 
-		FeatureExtractionMoeaProblem featureEvaluator = new FeatureExtractionMoeaProblem(new EventBus(), this.getExperimentConfiguration(), this.genomeHandler, datasetSplitSet);
+		FeatureExtractionMoeaProblem featureEvaluator = new FeatureExtractionMoeaProblem(new EventBus(), this.getTestExperimentConfiguration(), this.testGenomeHandler, datasetSplitSet);
 		featureEvaluator.evaluateAll(validSolutionDecodings.stream().map(solutionDecoding -> solutionDecoding.getSolution()).collect(Collectors.toList()));
 
-		RegressionGgpProblem runner = new RegressionGgpProblem(new EventBus(), this.getExperimentConfiguration(), validSolutionDecodings, groundTruthTest);
+		RegressionGgpProblem runner = new RegressionGgpProblem(new EventBus(), this.getTestExperimentConfiguration(), validSolutionDecodings, groundTruthTest);
 		RegressionGGPSolution best = runner.evaluateExtractors();
 
 		assertNotNull(best);
@@ -54,7 +54,7 @@ public class CoevolutionTest extends AbstractTest {
 
 	@Test(expected = RuntimeException.class)
 	public void testRegressionSearchWithEmptyListOfSolutions() throws Exception {
-		ExperimentConfiguration experimentConfiguration = this.getExperimentConfiguration();
+		ExperimentConfiguration experimentConfiguration = this.getTestExperimentConfiguration();
 
 		List<SolutionDecoding> validSolutionDecodings = new ArrayList<>();
 		List<List<Double>> groundTruthTest = new ArrayList<>();

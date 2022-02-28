@@ -23,34 +23,35 @@ public abstract class AbstractTest {
 
 	private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(AbstractTest.class);
 
-	private static final String CONFIG_FILE_PATH = "src/test/resources/searchspace/tests.cnf";
+	private static final String TEST_CONFIG_FILE_PATH = "src/test/resources/searchspace/tests.cnf";
+
 	protected static final String PYTHON_TEMPLATE_PATH = "src/main/resources/ml4pdm.py";
 
-	private ExperimentConfiguration experimentConfiguration;
-	protected GenomeHandler genomeHandler;
+	private ExperimentConfiguration testExperimentConfiguration;
 
-	public AbstractTest (final Class<? extends GenomeHandler> genomeHandlerClass) throws NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		Constructor<?> cons = genomeHandlerClass.getConstructor(ExperimentConfiguration.class);		
-		this.genomeHandler = (GenomeHandler) cons.newInstance(this.getExperimentConfiguration());;
+	protected GenomeHandler testGenomeHandler;
+
+	public AbstractTest(final Class<? extends GenomeHandler> genomeHandlerClass) throws NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		final Constructor<?> cons = genomeHandlerClass.getConstructor(ExperimentConfiguration.class);
+		this.testGenomeHandler = (GenomeHandler) cons.newInstance(this.getTestExperimentConfiguration());
 	}
-	
-	protected ExperimentConfiguration getExperimentConfiguration() {
-		if (this.experimentConfiguration == null) {
-			this.experimentConfiguration = new ExperimentConfiguration(CONFIG_FILE_PATH);
+
+	protected ExperimentConfiguration getTestExperimentConfiguration() {
+		if (this.testExperimentConfiguration == null) {
+			this.testExperimentConfiguration = new ExperimentConfiguration(TEST_CONFIG_FILE_PATH);
 		}
-		return this.experimentConfiguration;
+		return this.testExperimentConfiguration;
 	}
 
-	protected FeatureExtractionMoeaProblem getFeatureExtractionMoeaProblem()  {		
+	protected FeatureExtractionMoeaProblem getFeatureExtractionMoeaProblem() {
 		try {
-			ExperimentConfiguration experimentConfiguration = this.getExperimentConfiguration();
-			Random random = new Random(1);
+			final ExperimentConfiguration experimentConfiguration = this.getTestExperimentConfiguration();
+			final Random random = new Random(1);
 			PRNG.setSeed(experimentConfiguration.getSeed());
 			IDatasetSplitSet<ILabeledDataset<?>> datasetSplitSet;
 			datasetSplitSet = DataUtil.prepareDatasetSplits(experimentConfiguration, random);
-			return new FeatureExtractionMoeaProblem(new EventBus(), this.getExperimentConfiguration(), this.genomeHandler, datasetSplitSet);
-		} catch (DatasetDeserializationFailedException | IllegalAccessException | IllegalArgumentException | NoSuchFieldException | SecurityException
-				| ExperimentEvaluationFailedException | InterruptedException | SplitFailedException e) {
+			return new FeatureExtractionMoeaProblem(new EventBus(), this.getTestExperimentConfiguration(), this.testGenomeHandler, datasetSplitSet);
+		} catch (DatasetDeserializationFailedException | IllegalAccessException | IllegalArgumentException | NoSuchFieldException | SecurityException | ExperimentEvaluationFailedException | InterruptedException | SplitFailedException e) {
 			throw new RuntimeException();
 		}
 	}
