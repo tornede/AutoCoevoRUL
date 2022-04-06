@@ -34,14 +34,11 @@ public class BinaryAttributeSelectionIncludedGenomeHandler extends GenomeHandler
 
 	@Override
 	protected void setupAdditionalComponents(final ExperimentConfiguration experimentConfiguration) throws ExperimentEvaluationFailedException {
-		for (IAttribute attribute : experimentConfiguration.getTrainingData().getListOfAttributes()) {
-			String genome_name = this.getAttributeNameForGenomeRepresentation(attribute);
-			this.allComponents.add(new Component(genome_name, Arrays.asList("AttributeName"), new ArrayList<IRequiredInterfaceDefinition>(), new PartialOrderedSet<>(), new ArrayList<>()));
+		for (int a = 0; a < experimentConfiguration.getTrainingData().getListOfAttributes().size(); a++) {
+			IAttribute attribute = experimentConfiguration.getTrainingData().getListOfAttributes().get(a);
+			String genome_name = "ml4pdm.transformation.AttributeFilter." + a + "." + attribute.getName();
+			this.allComponents.add(new Component(genome_name, Arrays.asList("AttributeId"), new ArrayList<IRequiredInterfaceDefinition>(), new PartialOrderedSet<>(), new ArrayList<>()));
 		}
-	}
-
-	private String getAttributeNameForGenomeRepresentation(final IAttribute attribute) {
-		return "attribute_" + attribute.getName();
 	}
 
 	@Override
@@ -73,6 +70,17 @@ public class BinaryAttributeSelectionIncludedGenomeHandler extends GenomeHandler
 		return solution;
 	}
 
+	public Solution activateAttributeFilter(final Solution solution) {
+		List<Integer> defaultAttributesToFilter = Arrays.asList(1, 2);
+		for (IComponent component : this.allComponents.stream().filter(c -> c.getName().contains("AttributeFilter.")).sorted((c1, c2) -> c1.getName().compareTo(c2.getName())).collect(Collectors.toList())) {
+			int attributeID = Integer.parseInt(component.getName().split("\\.")[3]);
+			if (defaultAttributesToFilter.contains(attributeID)) {
+				((BinaryVariable) solution.getVariable(this.getIndexOfComponent(component.getName()))).set(0, true);
+			}
+		}
+		return solution;
+	}
+
 	@Override
 	public Solution activateTsfresh(final Solution solution) {
 		List<String> defaultTsfreshFeatures = Arrays.asList(new String[] { "MAXIMUM", "MINIMUM" });
@@ -90,7 +98,13 @@ public class BinaryAttributeSelectionIncludedGenomeHandler extends GenomeHandler
 		if (componentEntry.hasActivationBit()) {
 			return ((BinaryVariable) solution.getVariable(componentEntry.getActivationIndex())).get(0) == true;
 		} else {
-			if (componentEntry.getName().contains("TsfreshWrapper")) {
+			if (componentEntry.getName().contains("AttributeFilter")) {
+				for (GenomeComponentEntry attributeFilterGenomeComponentEntry : this.providedInterfaceToListOfComponentEntryMap.get("AttributeId")) {
+					if (this.isComponentActivated(attributeFilterGenomeComponentEntry, solution)) {
+						return true;
+					}
+				}
+			} else if (componentEntry.getName().contains("TsfreshWrapper")) {
 				for (GenomeComponentEntry tsfreshFeatureGenomeComponentEntry : this.providedInterfaceToListOfComponentEntryMap.get("TsfreshFeature")) {
 					if (this.isComponentActivated(tsfreshFeatureGenomeComponentEntry, solution)) {
 						return true;

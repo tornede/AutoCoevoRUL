@@ -126,6 +126,16 @@
 	</logger>
 	
 	<logger
+		name="experiment">
+		<level value="trace" />
+		<appender-ref ref="console" />
+		<appender-ref ref="infoFileAppender" />
+		<appender-ref ref="warnFileAppender" />
+		<appender-ref ref="errFileAppender" />
+		<appender-ref ref="consoleFileAppender" />
+	</logger>
+	
+	<logger
 		name="autocoevorul.baseline.randomsearch.RandomSearchRunner">
 		<level value="info" />
 		<appender-ref ref="console" />
@@ -145,11 +155,6 @@
 		<appender-ref ref="consoleFileAppender" />
 	</logger>
 
-	<logger
-		name="autocoevorul.featurerextraction.GenomeHandler">
-		<level value="trace" />
-	</logger>
-
 	<logger name="ai.libs">
 		<level value="warn" />
 		<appender-ref ref="console" />
@@ -160,6 +165,27 @@
 	</logger>
 
 
+
+	<logger
+		name="autocoevorul.featurerextraction.genomehandler.GenomeHandler">
+		<level value="debug" />
+	</logger>
+	
+	<logger
+		name="autocoevorul.featurerextraction.genomehandler.BasicGenomeHandler">
+		<level value="info" />
+	</logger>
+	
+	<logger
+		name="autocoevorul.featurerextraction.genomehandler.BinaryAttributeSelectionIncludedGenomeHandler">
+		<level value="info" />
+	</logger>
+	
+	<logger
+		name="autocoevorul.featurerextraction.ML4PdMTimeSeriesFeatureEngineeringWrapper.python">
+		<level value="info" />
+	</logger>
+	
 	<logger
 		name="ai.libs.python.PythonUtil">
 		<level value="debug" />
@@ -171,13 +197,18 @@
 	</logger>
 
 	<logger
-		name="ai.libs.jaicore.ml.scikitwrapper.DefaultProcessListener">
-		<level value="trace" />
+		name="ai.libs.python.DefaultProcessListener">
+		<level value="warn" />
 	</logger>
-
+	
 	<logger
-		name="ai.libs.jaicore.ml.scikitwrapper.ScikitLearnWrapper">
-		<level value="debug" />
+		name="ai.libs.jaicore.ml.scikitwrapper.AScikitLearnWrapper">
+		<level value="info" />
+	</logger>
+	
+	<logger
+		name="ai.libs.jaicore.ml.scikitwrapper.AScikitLearnWrapper.python">
+		<level value="info" />
 	</logger>
 
 	<logger

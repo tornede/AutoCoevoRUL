@@ -54,10 +54,6 @@ public interface ICoevolutionConfig extends IExperimentSetConfig {
 	@Separator(",")
 	public List<String> getFeatureMainComponentNamesWithoutActivationBit();
 
-	@Key("featurePythonTemplatePath")
-	@DefaultValue("../python_connection/run.py")
-	public String getFeaturePythonTemplatePath();
-
 	@Key("featureCandidateTimeout")
 	@DefaultValue("5:MINUTES")
 	@ConverterClass(TimeoutConverter.class)

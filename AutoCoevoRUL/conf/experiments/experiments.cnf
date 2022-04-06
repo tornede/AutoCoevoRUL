@@ -1,19 +1,18 @@
-cpu.max = 7
-mem.max = 10000
+cpu.max = 1
+mem.max = 4000
 
 dataPath = ../Data/
 numberOfFolds = 3
-totalTimeout = 10:MINUTES
+totalTimeout = 15:MINUTES
 
 rulSearchspace = searchspace/rul.json
 rulRulRootComponentName = sklearn.pipeline.make_pipeline
 
 featureSearchspace = searchspace/timeseries/timeseries_feature_extraction.json
 featureRequiredInterface = MLPipelineTimeseriesFeatureExtraction
-featureMainComponentNames = ml4pdm.transformation.TsfreshWrapper, ml4pdm.attributes.AttributeFilter
-featureMainComponentNamesWithoutActivationBit = ml4pdm.transformation.TsfreshWrapper
-featurePythonTemplatePath = ../python_connection/run.py
-featureCandidateTimeout = 5:MINUTES
+featureMainComponentNames = ml4pdm.transformation.TsfreshWrapper, ml4pdm.transformation.AttributeFilter
+featureMainComponentNamesWithoutActivationBit = ml4pdm.transformation.TsfreshWrapper, ml4pdm.transformation.AttributeFilter
+featureCandidateTimeout = 1:MINUTES
 featurePopulationSize = 7
 
 regressionSearchpace = searchspace/regression/index.json
@@ -41,4 +40,4 @@ ignore.memory = datasetName, internal_performance_measure, featureObjectiveMeasu
 datasetName = CMAPSS/FD001_train.arff, CMAPSS/FD002_train.arff, CMAPSS/FD003_train.arff, CMAPSS/FD004_train.arff, Phm08DataChallenge/train.arff
 internal_performance_measure = ASYMMETRIC_LOSS, MEAN_ABSOLUTE_PERCENTAGE_ERROR
 featureObjectiveMeasure = MINIMUM
-seed = 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+seed = 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 

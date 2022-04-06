@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 
 import org.aeonbits.owner.ConfigFactory;
 import org.api4.java.ai.ml.core.dataset.splitter.SplitFailedException;
-import org.api4.java.ai.ml.core.evaluation.IPrediction;
 import org.api4.java.ai.ml.core.evaluation.IPredictionBatch;
 import org.api4.java.ai.ml.core.exception.PredictionException;
 import org.api4.java.ai.ml.core.exception.TrainingException;
@@ -98,16 +97,14 @@ public abstract class AbstractRunner {
 		if (result == null || result.getPipelineEvaluationReport() == null || result.getPipelineEvaluationReport().getConstructionInstruction().isEmpty() || result.getPipelineEvaluationReport().getImports().isEmpty()) {
 			return;
 		}
-		ScikitLearnTimeSeriesRegressionWrapper<IPrediction, IPredictionBatch> sklearnWrapper = new ScikitLearnTimeSeriesRegressionWrapper<>(result.getPipelineEvaluationReport().getConstructionInstruction(),
-				result.getPipelineEvaluationReport().getImports());
+		ScikitLearnTimeSeriesRegressionWrapper sklearnWrapper = new ScikitLearnTimeSeriesRegressionWrapper(result.getPipelineEvaluationReport().getConstructionInstruction(), result.getPipelineEvaluationReport().getImports());
 		sklearnWrapper.setScikitLearnWrapperConfig(experimentConfiguration.getScikitLearnWrapperConfig());
-		sklearnWrapper.setPythonTemplate(experimentConfiguration.getFeaturePythonTemplatePath());
 		sklearnWrapper.setTimeout(experimentConfiguration.getRulTimeout());
 		sklearnWrapper.setSeed(experimentConfiguration.getSeed());
 		this.executeFinalPipeline(experimentConfiguration, sklearnWrapper, experimentDBColumns, processor);
 	}
 
-	protected void executeFinalPipeline(final ExperimentConfiguration experimentConfiguration, final ScikitLearnTimeSeriesRegressionWrapper<IPrediction, IPredictionBatch> sklearnWrapper, final Map<String, Object> experimentDBColumns,
+	protected void executeFinalPipeline(final ExperimentConfiguration experimentConfiguration, final ScikitLearnTimeSeriesRegressionWrapper sklearnWrapper, final Map<String, Object> experimentDBColumns,
 			final IExperimentIntermediateResultProcessor processor) throws IOException, TrainingException, InterruptedException, ExperimentEvaluationFailedException {
 		if (sklearnWrapper != null) {
 			try {

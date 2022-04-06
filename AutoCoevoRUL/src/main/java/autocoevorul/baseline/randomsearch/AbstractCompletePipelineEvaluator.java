@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.api4.java.ai.ml.core.dataset.supervised.ILabeledDataset;
-import org.api4.java.ai.ml.core.evaluation.IPrediction;
 import org.api4.java.ai.ml.core.evaluation.IPredictionBatch;
 import org.api4.java.ai.ml.core.evaluation.execution.IDatasetSplitSet;
 import org.api4.java.ai.ml.regression.evaluation.IRegressionPrediction;
@@ -70,21 +69,22 @@ public abstract class AbstractCompletePipelineEvaluator implements Runnable {
 		String exception = "";
 		long trainStart = System.currentTimeMillis();
 		List<Long> runtimes = new ArrayList<>();
-		for (int i = 0; i < this.experimentConfiguration.getNumberOfFolds(); i++) {
 
+		for (int i = 0; i < this.experimentConfiguration.getNumberOfFolds(); i++) {
 			try {
 				long foldStart = System.currentTimeMillis();
 				if (Thread.interrupted()) {
 					throw new InterruptedException();
 				}
 
-				ScikitLearnTimeSeriesRegressionWrapper<IPrediction, IPredictionBatch> learner = this.setupScikitlearnWrapper(constructionInstruction, imports, this.timeout);
+				ScikitLearnTimeSeriesRegressionWrapper learner = this.setupScikitlearnWrapper(constructionInstruction, imports, this.timeout);
 				IPredictionBatch predictionsForSplit = this.runScikitLearnWrapper(learner, i, this.timeout);
 
 				List<IRegressionPrediction> doublePredictionsForSplit = predictionsForSplit.getPredictions().stream()
 						.map(prediction -> new SingleTargetRegressionPrediction(Math.max(0, ((IRegressionPrediction) prediction).getDoublePrediction()))).collect(Collectors.toList());
 				performances.add(this.experimentConfiguration.getPerformanceMeasure().loss(this.groundTruthsForSplits.get(i), doublePredictionsForSplit));
 				runtimes.add(System.currentTimeMillis() - foldStart);
+
 			} catch (IOException | AlgorithmTimeoutedException | ExecutionException e) {
 				exception = ExceptionUtils.getStackTrace(e);
 				LOGGER.warn("Failed to fit and predict with Scikitlearn wrapper with pipeline {} on dataset {}. Error: \n {}", constructionInstruction, this.experimentConfiguration.getDatasetName(), ExceptionUtils.getStackTrace(e));
@@ -117,10 +117,9 @@ public abstract class AbstractCompletePipelineEvaluator implements Runnable {
 		return this.datasetSplitSet.getFolds(split).get(1);
 	}
 
-	protected abstract ScikitLearnTimeSeriesRegressionWrapper<IPrediction, IPredictionBatch> setupScikitlearnWrapper(String constructionInstruction, String imports, final Timeout timeout) throws IOException, InterruptedException;
+	protected abstract ScikitLearnTimeSeriesRegressionWrapper setupScikitlearnWrapper(String constructionInstruction, String imports, final Timeout timeout) throws IOException, InterruptedException;
 
-	private IPredictionBatch runScikitLearnWrapper(final ScikitLearnTimeSeriesRegressionWrapper<IPrediction, IPredictionBatch> scikitLearnWrapper, final int split, final Timeout timeout)
-			throws AlgorithmTimeoutedException, ExecutionException, InterruptedException {
+	private IPredictionBatch runScikitLearnWrapper(final ScikitLearnTimeSeriesRegressionWrapper scikitLearnWrapper, final int split, final Timeout timeout) throws AlgorithmTimeoutedException, ExecutionException, InterruptedException {
 		return TimedComputation.compute(() -> scikitLearnWrapper.fitAndPredict(this.getTrainingDataset(split), this.getTestingDataset(split)), timeout, "Pipeline execution interrupted.");
 	}
 

@@ -37,8 +37,7 @@ public class ScikitLearnSearchSpaceDeserializationTest {
 		return Stream.of(
 				/* attribute filter */
 				Arguments.of(BASE_PATH + "timeseries/attributes/attribute_filter.json", 1), //
-				Arguments.of(BASE_PATH + "timeseries/attributes/attribute_types.json", 3), //
-				Arguments.of(BASE_PATH + "timeseries/attributes/index.json", 4), //
+				Arguments.of(BASE_PATH + "timeseries/attributes/index.json", 1), //
 
 				/* tsfresh */
 				Arguments.of(BASE_PATH + "timeseries/tsfresh/tsfresh_features.json", 72), //
@@ -46,14 +45,14 @@ public class ScikitLearnSearchSpaceDeserializationTest {
 				Arguments.of(BASE_PATH + "timeseries/tsfresh/index.json", 73), //
 
 				/* all timeseries feature elements */
-				Arguments.of(BASE_PATH + "timeseries/index.json", 77), //
+				Arguments.of(BASE_PATH + "timeseries/index.json", 74), //
 
 				/* Regressors */
 				Arguments.of(BASE_PATH + "regression/mlpregressor.json", 1), //
 				Arguments.of(BASE_PATH + "regression/index.json", 8), //
 
 				/* RUL */
-				Arguments.of(BASE_PATH + "rul.json", 86) //
+				Arguments.of(BASE_PATH + "rul.json", 83) //
 		);
 	}
 

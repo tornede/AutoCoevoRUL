@@ -13,7 +13,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.api4.java.ai.ml.core.evaluation.IPrediction;
 import org.api4.java.ai.ml.core.evaluation.IPredictionBatch;
 import org.api4.java.ai.ml.core.evaluation.execution.IAggregatedPredictionPerformanceMeasure;
@@ -78,7 +77,7 @@ public class CompletePipelineEvaluator implements IObjectEvaluator<IComponentIns
 		int idOfFeatureExtractorToUse = Integer.parseInt(componentInstance.getParameterValue(RegressionGgpProblem.PLACEHOLDER_FEATURE_EXTRACTOR_ID_PARAMETER_NAME));
 
 		String featureExtractorConstructionString = this.solutionDecodings.get(idOfFeatureExtractorToUse).getConstructionInstruction();
-		String hashCode = Hashing.sha256().hashString(StringUtils.join(featureExtractorConstructionString, this.solutionDecodings.get(idOfFeatureExtractorToUse).getImports()), StandardCharsets.UTF_8).toString();
+		String hashCode = Hashing.sha256().hashString(featureExtractorConstructionString, StandardCharsets.UTF_8).toString();
 		String featureExtractorHashcode = hashCode.startsWith("-") ? hashCode.replace("-", "1") : "0" + hashCode;
 
 		List<ILearnerRunReport> reports = new ArrayList<>(this.experimentConfiguration.getNumberOfFolds());

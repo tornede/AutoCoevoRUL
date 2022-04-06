@@ -20,7 +20,7 @@ public class SolutionDecoding {
 		this.solution = solution;
 		this.componentInstance = componentInstances;
 
-		TimeseriesFeatureEngineeringScikitLearnFactory factory = new TimeseriesFeatureEngineeringScikitLearnFactory(); // TODO
+		ML4PdMFactory factory = new ML4PdMFactory();
 
 		Set<String> importSet = new HashSet<>();
 		this.constructionInstruction = factory.extractSKLearnConstructInstruction(this.componentInstance, importSet);

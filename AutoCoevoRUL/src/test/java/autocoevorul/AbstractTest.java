@@ -1,9 +1,11 @@
 package autocoevorul;
 
+import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Random;
 
+import org.aeonbits.owner.ConfigFactory;
 import org.api4.java.ai.ml.core.dataset.serialization.DatasetDeserializationFailedException;
 import org.api4.java.ai.ml.core.dataset.splitter.SplitFailedException;
 import org.api4.java.ai.ml.core.dataset.supervised.ILabeledDataset;
@@ -15,6 +17,7 @@ import com.google.common.eventbus.EventBus;
 
 import ai.libs.jaicore.experiments.exceptions.ExperimentEvaluationFailedException;
 import autocoevorul.experiment.ExperimentConfiguration;
+import autocoevorul.experiment.ICoevolutionConfig;
 import autocoevorul.featurerextraction.FeatureExtractionMoeaProblem;
 import autocoevorul.featurerextraction.genomehandler.GenomeHandler;
 import autocoevorul.util.DataUtil;
@@ -23,12 +26,10 @@ public abstract class AbstractTest {
 
 	private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(AbstractTest.class);
 
-	private static final String TEST_CONFIG_FILE_PATH = "src/test/resources/searchspace/tests.cnf";
-
+	protected static final String CONFIG_FILE_PATH = "conf/experiments/experiments.cnf";
 	protected static final String PYTHON_TEMPLATE_PATH = "src/main/resources/ml4pdm.py";
 
 	private ExperimentConfiguration testExperimentConfiguration;
-
 	protected GenomeHandler testGenomeHandler;
 
 	public AbstractTest(final Class<? extends GenomeHandler> genomeHandlerClass) throws NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
@@ -38,7 +39,9 @@ public abstract class AbstractTest {
 
 	protected ExperimentConfiguration getTestExperimentConfiguration() {
 		if (this.testExperimentConfiguration == null) {
-			this.testExperimentConfiguration = new ExperimentConfiguration(TEST_CONFIG_FILE_PATH);
+			final ICoevolutionConfig config = (ICoevolutionConfig) ConfigFactory.create(ICoevolutionConfig.class).loadPropertiesFromFile(new File(CONFIG_FILE_PATH));
+			config.setProperty("datasetName", "CMAPSS/FD001_train.arff");
+			this.testExperimentConfiguration = new ExperimentConfiguration(CONFIG_FILE_PATH, config);
 		}
 		return this.testExperimentConfiguration;
 	}

@@ -13,8 +13,6 @@ import java.util.stream.Collectors;
 
 import org.api4.java.ai.ml.core.dataset.serialization.DatasetDeserializationFailedException;
 import org.api4.java.ai.ml.core.dataset.supervised.ILabeledDataset;
-import org.api4.java.ai.ml.core.evaluation.IPrediction;
-import org.api4.java.ai.ml.core.evaluation.IPredictionBatch;
 import org.api4.java.ai.ml.core.evaluation.execution.IDatasetSplitSet;
 import org.api4.java.algorithm.exceptions.AlgorithmException;
 import org.api4.java.algorithm.exceptions.AlgorithmExecutionCanceledException;
@@ -27,7 +25,6 @@ import org.slf4j.Logger;
 import com.google.common.eventbus.EventBus;
 
 import ai.libs.jaicore.components.exceptions.ComponentNotFoundException;
-import ai.libs.jaicore.ml.scikitwrapper.ScikitLearnTimeSeriesFeatureEngineeringWrapper;
 import ai.libs.jaicore.timing.TimedComputation;
 import autocoevorul.event.UpdatingBestPipelineEvent;
 import autocoevorul.experiment.ExperimentConfiguration;
@@ -90,10 +87,8 @@ public class FeatureExtractionMoeaProblem extends AbstractProblem implements IBa
 						ILabeledDataset<?> trainingData = this.datasetSplitSet.getFolds(s).get(0);
 						ILabeledDataset<?> testingData = this.datasetSplitSet.getFolds(s).get(1);
 
-						ScikitLearnTimeSeriesFeatureEngineeringWrapper<IPrediction, IPredictionBatch> sklearnWrapper = new ScikitLearnTimeSeriesFeatureEngineeringWrapper<>(solutionDecoding.getConstructionInstruction(),
-								solutionDecoding.getImports());
+						ML4PdMTimeSeriesFeatureEngineeringWrapper sklearnWrapper = new ML4PdMTimeSeriesFeatureEngineeringWrapper(solutionDecoding.getConstructionInstruction(), solutionDecoding.getImports());
 						sklearnWrapper.setScikitLearnWrapperConfig(this.experimentConfiguration.getScikitLearnWrapperConfig());
-						sklearnWrapper.setPythonTemplate(this.experimentConfiguration.getFeaturePythonTemplatePath());
 						sklearnWrapper.setTimeout(this.experimentConfiguration.getFeatureCandidateTimeoutPerFold());
 						sklearnWrapper.setSeed(this.experimentConfiguration.getSeed());
 

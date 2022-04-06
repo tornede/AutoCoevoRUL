@@ -6,12 +6,13 @@ import java.util.stream.Collectors;
 
 import ai.libs.jaicore.basic.sets.Pair;
 import ai.libs.jaicore.components.api.IComponentInstance;
-import ai.libs.mlplan.sklearn.ScikitLearnTimeSeriesRegressionFactory;
+import autocoevorul.featurerextraction.ML4PdMFactory;
 
 public class ScikitLearnUtil {
 
 	public static Pair<String, String> createConstructionInstructionAndImportsFromComponentInstance(final IComponentInstance componentInstance) {
-		ScikitLearnTimeSeriesRegressionFactory factory = new ScikitLearnTimeSeriesRegressionFactory();
+		ML4PdMFactory factory = new ML4PdMFactory();
+
 		Set<String> importSet = new HashSet<>();
 		String constructionString = factory.extractSKLearnConstructInstruction(componentInstance, importSet);
 

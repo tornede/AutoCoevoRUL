@@ -8,8 +8,6 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.api4.java.ai.ml.core.dataset.splitter.SplitFailedException;
-import org.api4.java.ai.ml.core.evaluation.IPrediction;
-import org.api4.java.ai.ml.core.evaluation.IPredictionBatch;
 import org.api4.java.ai.ml.core.exception.PredictionException;
 import org.api4.java.ai.ml.core.exception.TrainingException;
 import org.api4.java.algorithm.Timeout;
@@ -92,11 +90,11 @@ public class MLPlanRunner extends AbstractRunner {
 				mlplan.registerListener(new DatabaseWritingEventListener(experimentConfiguration, dbConfig, executor));
 
 				SearchResult searchResult = new SearchResult(new EventBus());
-				ScikitLearnTimeSeriesRegressionWrapper<IPrediction, IPredictionBatch> optimizedRegressor = null;
+				ScikitLearnTimeSeriesRegressionWrapper optimizedRegressor = null;
 
 				long start = System.currentTimeMillis();
 				try {
-					optimizedRegressor = (ScikitLearnTimeSeriesRegressionWrapper<IPrediction, IPredictionBatch>) mlplan.call();
+					optimizedRegressor = (ScikitLearnTimeSeriesRegressionWrapper) mlplan.call();
 					searchResult.update(new PipelineEvaluationReport(optimizedRegressor.toString(), "", mlplan.getInternalValidationErrorOfSelectedClassifier(), start, System.currentTimeMillis()));
 
 				} catch (Exception e) {

@@ -53,7 +53,6 @@ public class AutoCoevolutionRunner extends AbstractRunner {
 	}
 
 	public GenomeHandler getGenomeHandler(final ExperimentConfiguration experimentConfiguration) throws IOException, ComponentNotFoundException, ExperimentEvaluationFailedException {
-		// return new GenomeHandlerV1(experimentConfiguration);
 		return new BinaryAttributeSelectionIncludedGenomeHandler(experimentConfiguration);
 	}
 

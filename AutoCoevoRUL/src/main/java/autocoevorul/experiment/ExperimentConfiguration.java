@@ -49,7 +49,6 @@ public class ExperimentConfiguration {
 	private List<String> featureMainComponentNamesWithoutActivationBit;
 	private int featurePopulationSize;
 	private Timeout totalTimeout;
-	private String featurePythonTemplatePath;
 	private Timeout featureGenerationTimeout;
 	private Timeout featureCandidateTimeout;
 	private IFeatureRater featureObjectiveMeasure;
@@ -87,7 +86,6 @@ public class ExperimentConfiguration {
 		this.featureRequiredInterface = experimentSetConfig.getFeatureRequiredInterfacee();
 		this.featureMainComponentNames = experimentSetConfig.getFeatureMainComponentNames();
 		this.featureMainComponentNamesWithoutActivationBit = experimentSetConfig.getFeatureMainComponentNamesWithoutActivationBit();
-		this.featurePythonTemplatePath = experimentSetConfig.getFeaturePythonTemplatePath();
 		this.featurePopulationSize = experimentSetConfig.getFeaturePopulationSize();
 		this.totalTimeout = experimentSetConfig.getTotalTimeout();
 		this.featureCandidateTimeout = experimentSetConfig.getFeatureCandidateTimeout();
@@ -197,7 +195,11 @@ public class ExperimentConfiguration {
 
 	public Map<String, String> getTemplateVariables() {
 		final HashMap<String, String> templateVariables = new HashMap<>();
-		templateVariables.put("instance_lengt", "350");
+		try {
+			templateVariables.put("number_of_attributes_minus_one", "" + (this.getTrainingData().getListOfAttributes().size() - 1));
+		} catch (ExperimentEvaluationFailedException e) {
+			throw new RuntimeException(e);
+		}
 		return templateVariables;
 	}
 
@@ -235,10 +237,6 @@ public class ExperimentConfiguration {
 
 	public Timeout getTotalTimeout() {
 		return this.totalTimeout;
-	}
-
-	public String getFeaturePythonTemplatePath() {
-		return this.featurePythonTemplatePath;
 	}
 
 	public Timeout getFeatureGenerationTimeout() {
@@ -316,7 +314,6 @@ public class ExperimentConfiguration {
 		sj.add("featureMainComponentNamesWithoutActivationBit=" + this.featureMainComponentNamesWithoutActivationBit);
 		sj.add("featurePopulationSize=" + this.featurePopulationSize);
 		sj.add("totalTimeout=" + this.totalTimeout);
-		sj.add("featurePythonTemplatePath=" + this.featurePythonTemplatePath);
 		sj.add("featureGenerationTimeout=" + this.featureGenerationTimeout);
 		sj.add("featureCandidateTimeout=" + this.featureCandidateTimeout);
 		sj.add("regressionSearchpace=" + this.regressionSearchpace);

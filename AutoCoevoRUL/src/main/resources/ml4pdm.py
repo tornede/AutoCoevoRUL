@@ -111,7 +111,7 @@ class ArgsHandler:
     @staticmethod
     def get_fit_output_file_path():
         path = sys.argv["fitOutput"]
-        print("* Fit output to file: ", path)
+        print("* Write output of fit to file: ", path)
         return path
 
     @staticmethod
@@ -123,7 +123,7 @@ class ArgsHandler:
     @staticmethod
     def get_predict_output_file_path():
         path = sys.argv["predictOutput"]
-        print("* Predict output to file: ", path)
+        print("* Write output of predict to file: ", path)
         return path
 
     @staticmethod
@@ -140,40 +140,33 @@ class ArgsHandler:
 
 
 def execute():
-    print("Executing feature engineering with the following configuration:")
-
     np.random.seed(ArgsHandler.get_seed())
     mode = ArgsHandler.get_mode()
     pipeline = ArgsHandler.get_pipeline()
     
     dataset_parser = DatasetParser()
     if mode is ModeType.FIT or mode is ModeType.FIT_AND_PREDICT:
-        print('\tStarting feature engineering ...')
-        dataset_fit = dataset_parser.read_from_file(ArgsHandler.get_fit_data_file_path())
-        pipeline.fit(X=dataset_fit.data, y=dataset_fit.target)
+        dataset_fit = dataset_parser.read_from_file(ArgsHandler.get_fit_data_file_path(), target_index=-1)
+        pipeline.fit(X=dataset_fit, y=dataset_fit.target)
 
         if problem_type == ProblemType.TIME_SERIES_FEATURE_ENGINEERING:
-            print('\tTransforming training data ...')
             dataset_fit_transformed = pipeline.transform(dataset_fit)
-            dataset_parser.write_to_file(dataset_fit_transformed, ArgsHandler.get_fit_output_file_path())
+            dataset_parser.write_to_file(dataset_fit_transformed, ArgsHandler.get_fit_output_file_path(), use_at_target_notation=False)
 
         model_serialization_file = ArgsHandler.get_model_serialization_file_path()
         if model_serialization_file is not None:
-            print("\tSerialize model to file ", model_serialization_file)
             dump(pipeline, model_serialization_file)
 
     if mode is ModeType.PREDICT:
         model_serialization_file = ArgsHandler.get_model_serialization_file_path()
-        print("\tDeserialize model from file ", model_serialization_file)
         pipeline = load(model_serialization_file)
 
     if mode is ModeType.PREDICT or mode is ModeType.FIT_AND_PREDICT:
-        print('\tTransforming testing data ...')
-        dataset_predict = dataset_parser.read_from_file(ArgsHandler.get_predict_data_file_path())
+        dataset_predict = dataset_parser.read_from_file(ArgsHandler.get_predict_data_file_path(), target_index=-1)
 
         if problem_type == ProblemType.TIME_SERIES_FEATURE_ENGINEERING:
             dataset_predict_transformed = pipeline.transform(dataset_predict)
-            dataset_parser.write_to_file(dataset_predict_transformed, ArgsHandler.get_predict_output_file_path())
+            dataset_parser.write_to_file(dataset_predict_transformed, ArgsHandler.get_predict_output_file_path(), use_at_target_notation=False)
 
         elif problem_type == ProblemType.TIME_SERIES_REGRESSION:
             predictions = pipeline.predict(dataset_predict)
@@ -193,9 +186,10 @@ def execute():
             predictions_json = json.dumps(predictions)
             
             predictions_file = ArgsHandler.get_predict_output_file_path()
-            print("\tWriting predictions to file ", predictions_file)
             with open(predictions_file, 'w') as file:
                 file.write(predictions_json)
+    
+    print("DONE.")
 
 
 if __name__ == "__main__":
@@ -206,6 +200,9 @@ if __name__ == "__main__":
     ArgsHandler.setup()
     problem_type = ArgsHandler.get_problem_type()
     if problem_type == ProblemType.TIME_SERIES_FEATURE_ENGINEERING or problem_type == ProblemType.TIME_SERIES_REGRESSION:
-        execute()
+        try:
+            execute()
+        except Exception as e:
+            raise RuntimeError(f"Could not evaluate pipeline due to following reason: \n{e}")
     else:
         raise RuntimeError(f"Unsupported problem type: {ArgsHandler.get_problem_type()}")
