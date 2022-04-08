@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 
 import org.api4.java.ai.ml.core.dataset.supervised.ILabeledDataset;
 import org.api4.java.ai.ml.core.evaluation.execution.IDatasetSplitSet;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.google.common.eventbus.EventBus;
@@ -19,8 +18,8 @@ import autocoevorul.experiment.ExperimentConfiguration;
 import autocoevorul.featurerextraction.FeatureExtractionMoeaProblem;
 import autocoevorul.featurerextraction.SolutionDecoding;
 import autocoevorul.featurerextraction.genomehandler.BinaryAttributeSelectionIncludedGenomeHandler;
-import autocoevorul.regression.RegressionGGPSolution;
-import autocoevorul.regression.RegressionGgpProblem;
+import autocoevorul.regression.GgpRegressionSolution;
+import autocoevorul.regression.GgpScikitLearnRegressionProblem;
 import autocoevorul.util.DataUtil;
 
 public class CoevolutionTest extends AbstractTest {
@@ -30,7 +29,6 @@ public class CoevolutionTest extends AbstractTest {
 	}
 
 	@Test
-	@Ignore
 	public void testRegressionSearchWithTsfresh() throws Exception {
 		IDatasetSplitSet<ILabeledDataset<?>> datasetSplitSet = DataUtil.prepareDatasetSplits(this.getTestExperimentConfiguration(), new Random(this.getTestExperimentConfiguration().getSeed()));
 
@@ -45,8 +43,8 @@ public class CoevolutionTest extends AbstractTest {
 		FeatureExtractionMoeaProblem featureEvaluator = new FeatureExtractionMoeaProblem(new EventBus(), this.getTestExperimentConfiguration(), this.testGenomeHandler, datasetSplitSet);
 		featureEvaluator.evaluateAll(validSolutionDecodings.stream().map(solutionDecoding -> solutionDecoding.getSolution()).collect(Collectors.toList()));
 
-		RegressionGgpProblem runner = new RegressionGgpProblem(new EventBus(), this.getTestExperimentConfiguration(), validSolutionDecodings, groundTruthTest);
-		RegressionGGPSolution best = runner.evaluateExtractors();
+		GgpScikitLearnRegressionProblem runner = new GgpScikitLearnRegressionProblem(new EventBus(), this.getTestExperimentConfiguration(), validSolutionDecodings, groundTruthTest);
+		GgpRegressionSolution best = runner.evaluateExtractors();
 
 		assertNotNull(best);
 	}
@@ -58,7 +56,7 @@ public class CoevolutionTest extends AbstractTest {
 		List<SolutionDecoding> validSolutionDecodings = new ArrayList<>();
 		List<List<Double>> groundTruthTest = new ArrayList<>();
 
-		RegressionGgpProblem runner = new RegressionGgpProblem(new EventBus(), experimentConfiguration, validSolutionDecodings, groundTruthTest);
+		GgpScikitLearnRegressionProblem runner = new GgpScikitLearnRegressionProblem(new EventBus(), experimentConfiguration, validSolutionDecodings, groundTruthTest);
 		runner.evaluateExtractors();
 	}
 

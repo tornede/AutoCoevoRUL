@@ -26,6 +26,7 @@ import ai.libs.jaicore.components.model.SoftwareConfigurationProblem;
 import ai.libs.jaicore.components.serialization.ComponentSerialization;
 import ai.libs.jaicore.ml.hpo.ggp.GrammarBasedGeneticProgramming;
 import ai.libs.jaicore.ml.hpo.ggp.GrammarBasedGeneticProgramming.GGPSolutionCandidate;
+import ai.libs.mlplan.sklearn.ScikitLearnRegressorFactory;
 import autocoevorul.event.FeatureExtractorEvaluatedEvent;
 import autocoevorul.event.GGPRegressionResultFoundEvent;
 import autocoevorul.experiment.ExperimentConfiguration;
@@ -33,10 +34,9 @@ import autocoevorul.featurerextraction.SolutionDecoding;
 import autocoevorul.regression.featurerating.EFeatureRater;
 import autocoevorul.util.ScikitLearnUtil;
 
-// TODO THINK OF NAME
-public class RegressionGgpProblem {
+public class GgpScikitLearnRegressionProblem {
 
-	private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(RegressionGgpProblem.class);
+	private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(GgpScikitLearnRegressionProblem.class);
 
 	private EventBus eventBus;
 
@@ -50,7 +50,7 @@ public class RegressionGgpProblem {
 
 	private GGPSolutionCandidate ggpResult;
 
-	public RegressionGgpProblem(final EventBus eventBus, final ExperimentConfiguration experimentConfiguration, final List<SolutionDecoding> featureDecodings, final List<List<Double>> groundTruthTest) throws IOException {
+	public GgpScikitLearnRegressionProblem(final EventBus eventBus, final ExperimentConfiguration experimentConfiguration, final List<SolutionDecoding> featureDecodings, final List<List<Double>> groundTruthTest) throws IOException {
 		if (featureDecodings.size() == 0) {
 			LOGGER.error("Given list of feature decodings is empty, which is not permitted.", featureDecodings.size());
 			throw new RuntimeException("Given list of feature decodings is empty, which is not permitted.");
@@ -79,7 +79,7 @@ public class RegressionGgpProblem {
 		return new SoftwareConfigurationProblem<>(componentRepository, PLACEHOLDER_REQUIRED_INTERFACE_TO_SEARCH, regressionEvaluator);
 	}
 
-	public RegressionGGPSolution evaluateExtractors() throws AlgorithmTimeoutedException, InterruptedException, AlgorithmExecutionCanceledException, AlgorithmException {
+	public GgpRegressionSolution evaluateExtractors() throws AlgorithmTimeoutedException, InterruptedException, AlgorithmExecutionCanceledException, AlgorithmException {
 		List<GGPSolutionCandidate> solutionCandidatesFromLastPopulation = this.runOptimizationOfRegressorsUsingExtractors();
 		Map<String, List<GGPSolutionCandidate>> featureExtractorStringsToSolutionCandidatesWithExtractor = this.mapGGPSolutionCandidatesToFeatureExtractor(solutionCandidatesFromLastPopulation);
 
@@ -98,9 +98,9 @@ public class RegressionGgpProblem {
 		return this.createRegressionGGPSolutionFromGGPResult();
 	}
 
-	private RegressionGGPSolution createRegressionGGPSolutionFromGGPResult() {
+	private GgpRegressionSolution createRegressionGGPSolutionFromGGPResult() {
 		if (this.ggpResult == null) {
-			RegressionGGPSolution regressionGGPSolution = new RegressionGGPSolution("None", "None", null, null, 10_000.0);
+			GgpRegressionSolution regressionGGPSolution = new GgpRegressionSolution("None", "None", null, null, 10_000.0);
 			this.eventBus.post(new GGPRegressionResultFoundEvent(regressionGGPSolution));
 			return null;
 		}
@@ -110,7 +110,7 @@ public class RegressionGgpProblem {
 		String constructionString = "make_pipeline(" + featureTransformerConstructionInstructionAndImports.getX() + "," + regressorConstructionInstructionAndImports.getX() + ")";
 		String imports = featureTransformerConstructionInstructionAndImports.getY() + "\n" + regressorConstructionInstructionAndImports.getY();
 
-		RegressionGGPSolution regressionGGPSolution = new RegressionGGPSolution(constructionString, imports, this.getRegressionComponentInstanceFromGGPResult(), this.getSolutionDecodingOfExtractorPresentInGGPResult().getComponentInstance(),
+		GgpRegressionSolution regressionGGPSolution = new GgpRegressionSolution(constructionString, imports, this.getRegressionComponentInstanceFromGGPResult(), this.getSolutionDecodingOfExtractorPresentInGGPResult().getComponentInstance(),
 				this.ggpResult.getScore());
 
 		this.eventBus.post(new GGPRegressionResultFoundEvent(regressionGGPSolution));
@@ -133,7 +133,7 @@ public class RegressionGgpProblem {
 
 	private Pair<String, String> getRegressorConstructionInstructionFromGGPResult() {
 		IComponentInstance regressorComponentInstance = this.getRegressionComponentInstanceFromGGPResult();
-		return ScikitLearnUtil.createConstructionInstructionAndImportsFromComponentInstance(regressorComponentInstance);
+		return ScikitLearnUtil.createConstructionInstructionAndImportsFromComponentInstance(new ScikitLearnRegressorFactory(), regressorComponentInstance);
 	}
 
 	private IComponentInstance getRegressionComponentInstanceFromGGPResult() {

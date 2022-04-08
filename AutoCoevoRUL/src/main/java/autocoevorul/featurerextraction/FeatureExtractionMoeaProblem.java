@@ -29,8 +29,8 @@ import ai.libs.jaicore.timing.TimedComputation;
 import autocoevorul.event.UpdatingBestPipelineEvent;
 import autocoevorul.experiment.ExperimentConfiguration;
 import autocoevorul.featurerextraction.genomehandler.GenomeHandler;
-import autocoevorul.regression.RegressionGGPSolution;
-import autocoevorul.regression.RegressionGgpProblem;
+import autocoevorul.regression.GgpRegressionSolution;
+import autocoevorul.regression.GgpScikitLearnRegressionProblem;
 
 public class FeatureExtractionMoeaProblem extends AbstractProblem implements IBatchEvaluationProblem {
 
@@ -46,7 +46,7 @@ public class FeatureExtractionMoeaProblem extends AbstractProblem implements IBa
 	private ExperimentConfiguration experimentConfiguration;
 
 	Map<Solution, SolutionDecoding> validSolutionDecodingsMap;
-	private RegressionGGPSolution bestPipeline;
+	private GgpRegressionSolution bestPipeline;
 
 	public FeatureExtractionMoeaProblem(final EventBus eventBus, final ExperimentConfiguration experimentConfiguration, final GenomeHandler genomeHandler, final IDatasetSplitSet<ILabeledDataset<?>> datasetSplitSet)
 			throws DatasetDeserializationFailedException {
@@ -150,8 +150,8 @@ public class FeatureExtractionMoeaProblem extends AbstractProblem implements IBa
 			}
 
 			try {
-				RegressionGgpProblem runner = new RegressionGgpProblem(this.eventBus, this.experimentConfiguration, validSolutionDecodingsList, groundTruthTest);
-				RegressionGGPSolution candidatePipeline = runner.evaluateExtractors();
+				GgpScikitLearnRegressionProblem runner = new GgpScikitLearnRegressionProblem(this.eventBus, this.experimentConfiguration, validSolutionDecodingsList, groundTruthTest);
+				GgpRegressionSolution candidatePipeline = runner.evaluateExtractors();
 
 				if (candidatePipeline != null) {
 					if (this.bestPipeline == null || candidatePipeline.getPerformance() < this.bestPipeline.getPerformance()) {
@@ -169,7 +169,7 @@ public class FeatureExtractionMoeaProblem extends AbstractProblem implements IBa
 		}
 	}
 
-	public RegressionGGPSolution getBestPipeline() {
+	public GgpRegressionSolution getBestPipeline() {
 		return this.bestPipeline;
 	}
 

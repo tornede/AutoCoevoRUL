@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -26,7 +25,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.eventbus.EventBus;
-import com.google.common.hash.Hashing;
 
 import ai.libs.jaicore.basic.sets.Pair;
 import ai.libs.jaicore.components.api.IComponentInstance;
@@ -39,6 +37,7 @@ import ai.libs.jaicore.ml.scikitwrapper.IScikitLearnWrapperConfig;
 import ai.libs.jaicore.ml.scikitwrapper.ScikitLearnRegressionWrapper;
 import ai.libs.jaicore.search.algorithms.standard.bestfirst.nodeevaluation.TimeAwareNodeEvaluator;
 import ai.libs.jaicore.timing.TimedComputation;
+import ai.libs.mlplan.sklearn.ScikitLearnRegressorFactory;
 import autocoevorul.event.RegressorEvaluatedEvent;
 import autocoevorul.experiment.ExperimentConfiguration;
 import autocoevorul.featurerextraction.SolutionDecoding;
@@ -51,15 +50,15 @@ public class CompletePipelineEvaluator implements IObjectEvaluator<IComponentIns
 	private EventBus eventBus;
 
 	private final ExperimentConfiguration experimentConfiguration;
-	private final List<SolutionDecoding> solutionDecodings;
+	private final List<SolutionDecoding> featureSolutionDecodings;
 	private final List<List<? extends Double>> groundTruthsForSplits;
 	private final IAggregatedPredictionPerformanceMeasure<Double, IRegressionPrediction> metric;
 
-	public CompletePipelineEvaluator(final EventBus eventBus, final ExperimentConfiguration experimentConfiguration, final List<SolutionDecoding> featureExtractorStrings, final List<List<Double>> groundTruthsForSplits) {
+	public CompletePipelineEvaluator(final EventBus eventBus, final ExperimentConfiguration experimentConfiguration, final List<SolutionDecoding> featureSolutionDecodings, final List<List<Double>> groundTruthsForSplits) {
 		super();
 		this.eventBus = eventBus;
 		this.experimentConfiguration = experimentConfiguration;
-		this.solutionDecodings = featureExtractorStrings;
+		this.featureSolutionDecodings = featureSolutionDecodings;
 
 		this.groundTruthsForSplits = new ArrayList<>(experimentConfiguration.getNumberOfFolds());
 		for (List<Double> groundTruthsForSplit : groundTruthsForSplits) {
@@ -74,11 +73,10 @@ public class CompletePipelineEvaluator implements IObjectEvaluator<IComponentIns
 
 		// extract top element from component instance as this only holds the dummy
 		// parameter describing the dataset to use
-		int idOfFeatureExtractorToUse = Integer.parseInt(componentInstance.getParameterValue(RegressionGgpProblem.PLACEHOLDER_FEATURE_EXTRACTOR_ID_PARAMETER_NAME));
+		int idOfFeatureExtractorToUse = Integer.parseInt(componentInstance.getParameterValue(GgpScikitLearnRegressionProblem.PLACEHOLDER_FEATURE_EXTRACTOR_ID_PARAMETER_NAME));
 
-		String featureExtractorConstructionString = this.solutionDecodings.get(idOfFeatureExtractorToUse).getConstructionInstruction();
-		String hashCode = Hashing.sha256().hashString(featureExtractorConstructionString, StandardCharsets.UTF_8).toString();
-		String featureExtractorHashcode = hashCode.startsWith("-") ? hashCode.replace("-", "1") : "0" + hashCode;
+		String featureExtractorConstructionString = this.featureSolutionDecodings.get(idOfFeatureExtractorToUse).getConstructionInstruction();
+		String featureExtractorHashCode = AScikitLearnWrapper.getHashCodeForConstructionInstruction(featureExtractorConstructionString);
 
 		List<ILearnerRunReport> reports = new ArrayList<>(this.experimentConfiguration.getNumberOfFolds());
 		List<List<? extends IRegressionPrediction>> predictions = new ArrayList<>(this.experimentConfiguration.getNumberOfFolds());
@@ -93,8 +91,8 @@ public class CompletePipelineEvaluator implements IObjectEvaluator<IComponentIns
 				throw new InterruptedException();
 			}
 
-			String trainDatasetName = this.getTrainingDatasetName(featureExtractorHashcode, i);
-			String testDatasetName = this.getTestDatasetName(featureExtractorHashcode, i);
+			String trainDatasetName = this.getTrainingDatasetName(featureExtractorHashCode, i);
+			String testDatasetName = this.getTestDatasetName(featureExtractorHashCode, i);
 
 			ILearnerRunReport report = null;
 			ScikitLearnRegressionWrapper<IPrediction, IPredictionBatch> learner = null;
@@ -143,14 +141,14 @@ public class CompletePipelineEvaluator implements IObjectEvaluator<IComponentIns
 		}
 		if (predictions.size() < this.groundTruthsForSplits.size()) {
 			// all folds have failed, so we have to throw an ObjectEvaluationFailedException
-			this.eventBus.post(new RegressorEvaluatedEvent(pipeline, featureExtractorConstructionString, this.getTrainingDatasetName(featureExtractorHashcode, -1), exception, componentInstance.getAnnotation("generation")));
+			this.eventBus.post(new RegressorEvaluatedEvent(pipeline, featureExtractorConstructionString, this.getTrainingDatasetName(featureExtractorHashCode, -1), exception, componentInstance.getAnnotation("generation")));
 			throw new ObjectEvaluationFailedException("Could not evaluate learner " + pipeline + " as at least one fold has failed.");
 		}
 
 		this.logger.debug("Compute metric ({}) for the diff of predictions and ground truth.", this.metric.getClass().getName());
 		double score = this.metric.loss(this.groundTruthsForSplits, predictions);
 		this.logger.info("Computed value for metric {} of {} executions. Metric value is: {}. Pipeline: {}", this.metric, this.experimentConfiguration.getNumberOfFolds(), score, pipeline);
-		this.eventBus.post(new RegressorEvaluatedEvent(pipeline, featureExtractorConstructionString, this.getTrainingDatasetName(featureExtractorHashcode, -1), score, runtimes, componentInstance.getAnnotation("generation")));
+		this.eventBus.post(new RegressorEvaluatedEvent(pipeline, featureExtractorConstructionString, this.getTrainingDatasetName(featureExtractorHashCode, -1), score, runtimes, componentInstance.getAnnotation("generation")));
 
 		return score;
 	}
@@ -172,7 +170,7 @@ public class CompletePipelineEvaluator implements IObjectEvaluator<IComponentIns
 			x.setAccessible(true);
 
 			File tmpFolder = (File) x.invoke(f.get(learner));
-			return new File(tmpFolder + "/" + datasetName + ".arff");
+			return new File(tmpFolder + "/" + datasetName + ".pdmff");
 
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchFieldException | NoSuchMethodException | SecurityException e) {
 			throw new RuntimeException("Could not figure out correct file for training or test dataset: " + datasetName);
@@ -195,12 +193,12 @@ public class CompletePipelineEvaluator implements IObjectEvaluator<IComponentIns
 		}
 		IComponentInstance componentInstanceWithoutDummy = satisfiedRegressorInterfaceInstancesInComponentInstance.get(0);
 
-		Pair<String, String> constructionInstructionAndImports = ScikitLearnUtil.createConstructionInstructionAndImportsFromComponentInstance(componentInstanceWithoutDummy);
+		Pair<String, String> constructionInstructionAndImports = ScikitLearnUtil.createConstructionInstructionAndImportsFromComponentInstance(new ScikitLearnRegressorFactory(), componentInstanceWithoutDummy);
 
 		ScikitLearnRegressionWrapper<IPrediction, IPredictionBatch> sklearnWrapper = new ScikitLearnRegressionWrapper<>(constructionInstructionAndImports.getX(), constructionInstructionAndImports.getY());
 		sklearnWrapper.setScikitLearnWrapperConfig(this.experimentConfiguration.getScikitLearnWrapperConfig());
 		sklearnWrapper.setTimeout(this.experimentConfiguration.getRegressionCandidateTimeout());
-		sklearnWrapper.setSeed(this.experimentConfiguration.getSeed());
+		sklearnWrapper.setPythonTemplate("src/main/resources/scikit-learn.py");
 		return sklearnWrapper;
 	}
 

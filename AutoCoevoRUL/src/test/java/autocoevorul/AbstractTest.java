@@ -1,6 +1,7 @@
 package autocoevorul;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Random;
@@ -10,6 +11,8 @@ import org.api4.java.ai.ml.core.dataset.serialization.DatasetDeserializationFail
 import org.api4.java.ai.ml.core.dataset.splitter.SplitFailedException;
 import org.api4.java.ai.ml.core.dataset.supervised.ILabeledDataset;
 import org.api4.java.ai.ml.core.evaluation.execution.IDatasetSplitSet;
+import org.api4.java.ai.ml.core.exception.PredictionException;
+import org.api4.java.ai.ml.core.exception.TrainingException;
 import org.moeaframework.core.PRNG;
 import org.slf4j.Logger;
 
@@ -19,6 +22,8 @@ import ai.libs.jaicore.experiments.exceptions.ExperimentEvaluationFailedExceptio
 import autocoevorul.experiment.ExperimentConfiguration;
 import autocoevorul.experiment.ICoevolutionConfig;
 import autocoevorul.featurerextraction.FeatureExtractionMoeaProblem;
+import autocoevorul.featurerextraction.ML4PdMTimeSeriesFeatureEngineeringWrapper;
+import autocoevorul.featurerextraction.SolutionDecoding;
 import autocoevorul.featurerextraction.genomehandler.GenomeHandler;
 import autocoevorul.util.DataUtil;
 
@@ -57,6 +62,17 @@ public abstract class AbstractTest {
 		} catch (DatasetDeserializationFailedException | IllegalAccessException | IllegalArgumentException | NoSuchFieldException | SecurityException | ExperimentEvaluationFailedException | InterruptedException | SplitFailedException e) {
 			throw new RuntimeException();
 		}
+	}
+
+	public boolean executePipeline(final SolutionDecoding solutionDecoding, final ILabeledDataset<?> iLabeledDataset, final ILabeledDataset<?> iLabeledDataset2)
+			throws IOException, InterruptedException, TrainingException, PredictionException, ExperimentEvaluationFailedException {
+		ML4PdMTimeSeriesFeatureEngineeringWrapper sklearnWrapper = new ML4PdMTimeSeriesFeatureEngineeringWrapper(solutionDecoding.getConstructionInstruction(), solutionDecoding.getImports());
+		sklearnWrapper.setPythonTemplate(PYTHON_TEMPLATE_PATH);
+		sklearnWrapper.setTimeout(this.getTestExperimentConfiguration().getFeatureCandidateTimeoutPerFold());
+		sklearnWrapper.setSeed(1234);
+
+		sklearnWrapper.fitAndPredict(iLabeledDataset, iLabeledDataset2);
+		return true;
 	}
 
 	protected int getPositionInArray(final Object value, final Object... array) {

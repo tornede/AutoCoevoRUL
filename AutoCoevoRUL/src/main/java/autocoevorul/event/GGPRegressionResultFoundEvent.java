@@ -1,17 +1,17 @@
 package autocoevorul.event;
 
-import autocoevorul.regression.RegressionGGPSolution;
+import autocoevorul.regression.GgpRegressionSolution;
 
 public class GGPRegressionResultFoundEvent extends AbstractEvent {
 
-	private RegressionGGPSolution regressionGGPSolution;
+	private GgpRegressionSolution regressionGGPSolution;
 
-	public GGPRegressionResultFoundEvent(final RegressionGGPSolution regressionGGPSolution) {
+	public GGPRegressionResultFoundEvent(final GgpRegressionSolution regressionGGPSolution) {
 		super();
 		this.regressionGGPSolution = regressionGGPSolution;
 	}
 
-	public RegressionGGPSolution getRegressionGGPSolution() {
+	public GgpRegressionSolution getRegressionGGPSolution() {
 		return this.regressionGGPSolution;
 	}
 

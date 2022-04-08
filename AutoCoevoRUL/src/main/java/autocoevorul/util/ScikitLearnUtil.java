@@ -6,13 +6,11 @@ import java.util.stream.Collectors;
 
 import ai.libs.jaicore.basic.sets.Pair;
 import ai.libs.jaicore.components.api.IComponentInstance;
-import autocoevorul.featurerextraction.ML4PdMFactory;
+import ai.libs.mlplan.sklearn.AScikitLearnLearnerFactory;
 
 public class ScikitLearnUtil {
 
-	public static Pair<String, String> createConstructionInstructionAndImportsFromComponentInstance(final IComponentInstance componentInstance) {
-		ML4PdMFactory factory = new ML4PdMFactory();
-
+	public static Pair<String, String> createConstructionInstructionAndImportsFromComponentInstance(final AScikitLearnLearnerFactory factory, final IComponentInstance componentInstance) {
 		Set<String> importSet = new HashSet<>();
 		String constructionString = factory.extractSKLearnConstructInstruction(componentInstance, importSet);
 

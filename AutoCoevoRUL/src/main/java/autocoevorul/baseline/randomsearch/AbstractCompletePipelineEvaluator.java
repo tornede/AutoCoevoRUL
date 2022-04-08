@@ -28,6 +28,7 @@ import ai.libs.mlplan.sklearn.AScikitLearnLearnerFactory;
 import autocoevorul.SearchResult;
 import autocoevorul.event.RegressorEvaluatedEvent;
 import autocoevorul.experiment.ExperimentConfiguration;
+import autocoevorul.featurerextraction.ML4PdMFactory;
 import autocoevorul.util.ScikitLearnUtil;
 
 public abstract class AbstractCompletePipelineEvaluator implements Runnable {
@@ -61,7 +62,7 @@ public abstract class AbstractCompletePipelineEvaluator implements Runnable {
 
 	@Override
 	public void run() {
-		Pair<String, String> constructionInstructionAndImports = ScikitLearnUtil.createConstructionInstructionAndImportsFromComponentInstance(this.componentInstance);
+		Pair<String, String> constructionInstructionAndImports = ScikitLearnUtil.createConstructionInstructionAndImportsFromComponentInstance(new ML4PdMFactory(), this.componentInstance);
 		String constructionInstruction = constructionInstructionAndImports.getX();
 		String imports = constructionInstructionAndImports.getY();
 

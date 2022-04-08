@@ -7,7 +7,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.io.FileUtils;
 import org.api4.java.ai.ml.core.dataset.supervised.ILabeledDataset;
@@ -18,11 +17,9 @@ import org.junit.Test;
 import org.junit.jupiter.api.BeforeAll;
 import org.moeaframework.core.Solution;
 
-import com.google.common.hash.Hashing;
-
 import ai.libs.jaicore.components.exceptions.ComponentNotFoundException;
 import ai.libs.jaicore.experiments.exceptions.ExperimentEvaluationFailedException;
-import autocoevorul.featurerextraction.ML4PdMTimeSeriesFeatureEngineeringWrapper;
+import ai.libs.jaicore.ml.scikitwrapper.AScikitLearnWrapper;
 import autocoevorul.featurerextraction.SolutionDecoding;
 import autocoevorul.featurerextraction.genomehandler.BinaryAttributeSelectionIncludedGenomeHandler;
 
@@ -47,16 +44,6 @@ public class BinaryAttributeSelectionIncludedGenomeHandlerTest extends AbstractT
 				, this.testGenomeHandler.getNumberOfVariables());
 	}
 
-	private boolean executePipeline(final SolutionDecoding solutionDecoding) throws IOException, InterruptedException, TrainingException, PredictionException, ExperimentEvaluationFailedException {
-		ML4PdMTimeSeriesFeatureEngineeringWrapper sklearnWrapper = new ML4PdMTimeSeriesFeatureEngineeringWrapper(solutionDecoding.getConstructionInstruction(), solutionDecoding.getImports());
-		sklearnWrapper.setPythonTemplate(PYTHON_TEMPLATE_PATH);
-		sklearnWrapper.setTimeout(this.getTestExperimentConfiguration().getFeatureCandidateTimeoutPerFold());
-		sklearnWrapper.setSeed(1234);
-
-		sklearnWrapper.fitAndPredict(this.getTestExperimentConfiguration().getTrainingData(), this.getTestExperimentConfiguration().getEvaluationData());
-		return true;
-	}
-
 	@Test
 	public void testInitialAttributeFilterSolutions() throws ComponentNotFoundException, TrainingException, PredictionException, IOException, InterruptedException, ExperimentEvaluationFailedException {
 		Solution attributeFilterSolution = ((BinaryAttributeSelectionIncludedGenomeHandler) this.testGenomeHandler).activateAttributeFilter(this.testGenomeHandler.getEmptySolution(this.getFeatureExtractionMoeaProblem()));
@@ -68,13 +55,13 @@ public class BinaryAttributeSelectionIncludedGenomeHandlerTest extends AbstractT
 		assertEquals(2, solutionDecoding.getImports().split("\n").length);
 		assertEquals("from ml4pdm.transformation import AttributeFilter\n" + "from sklearn.pipeline import make_pipeline\n", solutionDecoding.getImports());
 
-		assertTrue(this.executePipeline(solutionDecoding));
+		assertTrue(this.executePipeline(solutionDecoding, this.getTestExperimentConfiguration().getTrainingData(), this.getTestExperimentConfiguration().getEvaluationData()));
 
-		String transformedTrainingDatasetName = this.getHashCodeForSolutionDecoding(solutionDecoding) + "_" + "CMAPSS_FD001_train.pdmff";
+		String transformedTrainingDatasetName = AScikitLearnWrapper.getHashCodeForConstructionInstruction(solutionDecoding.getConstructionInstruction()) + "_CMAPSS_FD001_train.pdmff";
 		ILabeledDataset<ILabeledInstance> transformedTrainingDataset = this.getTestExperimentConfiguration().readDataFile("tmp/tmp1/" + transformedTrainingDatasetName);
 		assertEquals(2, transformedTrainingDataset.getNumAttributes());
 
-		String transformedTestDatasetName = this.getHashCodeForSolutionDecoding(solutionDecoding) + "_" + "CMAPSS_FD001_train.pdmff";
+		String transformedTestDatasetName = AScikitLearnWrapper.getHashCodeForConstructionInstruction(solutionDecoding.getConstructionInstruction()) + "_CMAPSS_FD001_test.pdmff";
 		ILabeledDataset<ILabeledInstance> transformedTestDataset = this.getTestExperimentConfiguration().readDataFile("tmp/tmp1/" + transformedTestDatasetName);
 		assertEquals(2, transformedTestDataset.getNumAttributes());
 
@@ -94,20 +81,15 @@ public class BinaryAttributeSelectionIncludedGenomeHandlerTest extends AbstractT
 				+ "from sklearn.pipeline import make_pipeline\n", //
 				solutionDecoding.getImports());
 
-		assertTrue(this.executePipeline(solutionDecoding));
+		assertTrue(this.executePipeline(solutionDecoding, this.getTestExperimentConfiguration().getTrainingData(), this.getTestExperimentConfiguration().getEvaluationData()));
 
-		String transformedTrainingDatasetName = this.getHashCodeForSolutionDecoding(solutionDecoding) + "_" + "CMAPSS_FD001_train.pdmff";
+		String transformedTrainingDatasetName = AScikitLearnWrapper.getHashCodeForConstructionInstruction(solutionDecoding.getConstructionInstruction()) + "_CMAPSS_FD001_train.pdmff";
 		ILabeledDataset<ILabeledInstance> transformedTrainingDataset = this.getTestExperimentConfiguration().readDataFile("tmp/tmp1/" + transformedTrainingDatasetName);
 		assertEquals(48, transformedTrainingDataset.getNumAttributes());
 
-		String transformedTestDatasetName = this.getHashCodeForSolutionDecoding(solutionDecoding) + "_" + "CMAPSS_FD001_train.pdmff";
+		String transformedTestDatasetName = AScikitLearnWrapper.getHashCodeForConstructionInstruction(solutionDecoding.getConstructionInstruction()) + "_CMAPSS_FD001_test.pdmff";
 		ILabeledDataset<ILabeledInstance> transformedTestDataset = this.getTestExperimentConfiguration().readDataFile("tmp/tmp1/" + transformedTestDatasetName);
 		assertEquals(48, transformedTestDataset.getNumAttributes());
-	}
-
-	public String getHashCodeForSolutionDecoding(final SolutionDecoding solutionDecoding) {
-		final String hashCode = Hashing.sha256().hashString(solutionDecoding.getConstructionInstruction(), StandardCharsets.UTF_8).toString();
-		return hashCode.startsWith("-") ? hashCode.replace("-", "1") : "0" + hashCode;
 	}
 
 }
